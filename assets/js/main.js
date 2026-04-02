@@ -17,6 +17,12 @@
   });
 
   /* ────────────────────────────────────────────
+     DYNAMIC COPYRIGHT YEAR
+  ──────────────────────────────────────────── */
+  const yearEl = document.getElementById('copyright-year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  /* ────────────────────────────────────────────
      NAVBAR SCROLL EFFECT
   ──────────────────────────────────────────── */
   const navbar    = document.getElementById('navbar');
@@ -56,6 +62,10 @@
     document.getElementById('icon-moon').classList.toggle('hidden',  isDark);
     document.getElementById('icon-sun').classList.toggle('hidden',  !isDark);
     currentTheme = isDark ? 'light' : 'dark';
+
+    // Update theme-color meta tag for mobile browsers
+    const themeColor = isDark ? '#f8f8fd' : '#7c3aed';
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', themeColor);
   }
 
   /* ────────────────────────────────────────────
@@ -127,7 +137,7 @@
   ──────────────────────────────────────────── */
   function initReveal() {
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           setTimeout(() => {
             entry.target.classList.add('visible');
@@ -253,6 +263,193 @@
   sections.forEach(s => sectionObserver.observe(s));
 
   /* ────────────────────────────────────────────
-     NAVBAR GLASS on scroll
+     FAQ ACCORDION
   ──────────────────────────────────────────── */
-  // Already handled by 'scrolled' class above via scroll listener
+  function toggleFaq(item) {
+    const wasActive = item.classList.contains('active');
+    // Close all FAQ items
+    document.querySelectorAll('.faq-item').forEach(faq => {
+      faq.classList.remove('active');
+      faq.querySelector('.faq-question')?.setAttribute('aria-expanded', 'false');
+    });
+    // Open clicked one if it wasn't already open
+    if (!wasActive) {
+      item.classList.add('active');
+      item.querySelector('.faq-question')?.setAttribute('aria-expanded', 'true');
+    }
+  }
+  // Expose to global scope for onclick
+  window.toggleFaq = toggleFaq;
+
+  /* ────────────────────────────────────────────
+     PARTICLE CANVAS (Hero Floating Particles)
+  ──────────────────────────────────────────── */
+  (function initParticles() {
+    const canvas = document.getElementById('particle-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animFrame;
+
+    function resize() {
+      const hero = canvas.parentElement;
+      canvas.width = hero.offsetWidth;
+      canvas.height = hero.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height + Math.random() * 100;
+        this.size = Math.random() * 2.5 + 0.5;
+        this.speedY = Math.random() * 0.6 + 0.2;
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.opacity = Math.random() * 0.5 + 0.1;
+        this.fadeSpeed = Math.random() * 0.003 + 0.001;
+      }
+      update() {
+        this.y -= this.speedY;
+        this.x += this.speedX;
+        this.opacity -= this.fadeSpeed;
+        if (this.opacity <= 0 || this.y < -10) this.reset();
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(167, 139, 250, ${this.opacity})`;
+        ctx.fill();
+        // Glow effect
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(124, 58, 237, ${this.opacity * 0.15})`;
+        ctx.fill();
+      }
+    }
+
+    // Create particles (fewer on mobile)
+    const count = window.innerWidth < 768 ? 20 : 50;
+    for (let i = 0; i < count; i++) {
+      const p = new Particle();
+      p.y = Math.random() * canvas.height;
+      particles.push(p);
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      animFrame = requestAnimationFrame(animate);
+    }
+    animate();
+  })();
+
+  /* ────────────────────────────────────────────
+     MAGNETIC CURSOR GLOW (Desktop only)
+  ──────────────────────────────────────────── */
+  (function initCursorGlow() {
+    if (window.innerWidth < 768) return;
+    const glow = document.getElementById('cursor-glow');
+    if (!glow) return;
+
+    let mouseX = 0, mouseY = 0;
+    let glowX = 0, glowY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function updateGlow() {
+      glowX += (mouseX - glowX) * 0.08;
+      glowY += (mouseY - glowY) * 0.08;
+      glow.style.left = glowX + 'px';
+      glow.style.top = glowY + 'px';
+      requestAnimationFrame(updateGlow);
+    }
+    updateGlow();
+  })();
+
+  /* ────────────────────────────────────────────
+     COUNTER ANIMATION (Count up numbers)
+  ──────────────────────────────────────────── */
+  function animateCounters() {
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const text = el.textContent;
+          const match = text.match(/^(\d+)(\+?)$/);
+          if (!match) return;
+
+          const target = parseInt(match[1]);
+          const suffix = match[2] || '';
+          const duration = 2000;
+          const start = performance.now();
+
+          function update(now) {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            // Ease out cubic
+            const ease = 1 - Math.pow(1 - progress, 3);
+            const current = Math.round(target * ease);
+            el.textContent = current + suffix;
+            if (progress < 1) requestAnimationFrame(update);
+          }
+          requestAnimationFrame(update);
+          counterObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.stat-num').forEach(el => {
+      counterObserver.observe(el);
+    });
+  }
+  // Initialize after loader
+  setTimeout(animateCounters, 1000);
+
+  /* ────────────────────────────────────────────
+     TILT CARD EFFECT (3D tilt on hover)
+  ──────────────────────────────────────────── */
+  (function initTiltCards() {
+    if (window.innerWidth < 768) return;
+
+    document.querySelectorAll('.glass.rounded-2xl.p-6').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = (y - centerY) / centerY * -8;
+        const rotateY = (x - centerX) / centerX * 8;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+      });
+    });
+  })();
+
+  /* ────────────────────────────────────────────
+     DIRECTIONAL REVEAL OBSERVER
+  ──────────────────────────────────────────── */
+  function initDirectionalReveal() {
+    const dirObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          dirObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal-left, .reveal-right, .reveal-scale').forEach(el => {
+      dirObserver.observe(el);
+    });
+  }
+  setTimeout(initDirectionalReveal, 900);
+

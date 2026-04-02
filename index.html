@@ -16,8 +16,12 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://ibrahem-khaled.github.io" />
   <meta property="og:image" content="https://avatars.githubusercontent.com/u/92178110?v=4" />
+  <meta name="theme-color" content="#7c3aed" />
 
   <title>Ibrahem Khaled | Senior Full Stack Developer</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%237c3aed'/><text x='50' y='68' font-family='sans-serif' font-weight='800' font-size='48' fill='white' text-anchor='middle'>IK</text></svg>" />
 
   <!-- ============================================================
        FONTS  (Syne display + DM Sans body)
@@ -70,6 +74,12 @@
 
 <body>
 
+<!-- Skip to content (Accessibility) -->
+<a href="#main-content" class="skip-link">Skip to content</a>
+
+<!-- Cursor glow (desktop only) -->
+<div class="cursor-glow" id="cursor-glow"></div>
+
 <!-- ============================================================
      LOADING SCREEN
 ============================================================ -->
@@ -102,6 +112,7 @@
       <li><a href="#projects"     class="nav-link hover:text-white transition-colors" data-en="Projects"    data-ar="المشاريع">Projects</a></li>
       <li><a href="#team"         class="nav-link hover:text-white transition-colors" data-en="Team"        data-ar="الفريق">Team</a></li>
       <li><a href="#testimonials" class="nav-link hover:text-white transition-colors" data-en="Reviews"     data-ar="آراء">Reviews</a></li>
+      <li><a href="#faq"          class="nav-link hover:text-white transition-colors" data-en="FAQ"         data-ar="أسئلة">FAQ</a></li>
       <li><a href="#contact"      class="nav-link hover:text-white transition-colors" data-en="Contact"     data-ar="تواصل">Contact</a></li>
     </ul>
 
@@ -139,21 +150,28 @@
       <li><a href="#projects"     onclick="closeMobileMenu()" class="block hover:text-white transition-colors" data-en="Projects"   data-ar="المشاريع">Projects</a></li>
       <li><a href="#team"         onclick="closeMobileMenu()" class="block hover:text-white transition-colors" data-en="Team"       data-ar="الفريق">Team</a></li>
       <li><a href="#testimonials" onclick="closeMobileMenu()" class="block hover:text-white transition-colors" data-en="Reviews"    data-ar="آراء">Reviews</a></li>
+      <li><a href="#faq"          onclick="closeMobileMenu()" class="block hover:text-white transition-colors" data-en="FAQ"        data-ar="أسئلة">FAQ</a></li>
       <li><a href="#contact"      onclick="closeMobileMenu()" class="block hover:text-white transition-colors" data-en="Contact"    data-ar="تواصل">Contact</a></li>
     </ul>
   </div>
 </header>
 
+<main id="main-content">
+
 <!-- ============================================================
      HERO SECTION
 ============================================================ -->
 <section id="hero" class="min-h-screen flex items-center pt-16 overflow-hidden" aria-label="Hero">
+  <!-- Animated grid background -->
+  <div class="hero-grid-bg"></div>
+  <!-- Particle canvas -->
+  <canvas id="particle-canvas"></canvas>
   <!-- Background blobs -->
   <div class="blob w-96 h-96 bg-violet-700/20 top-20 -left-20" style="position:absolute"></div>
   <div class="blob w-72 h-72 bg-indigo-600/15 bottom-20 right-10" style="position:absolute"></div>
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-    <div class="grid lg:grid-cols-2 gap-12 items-center py-20">
+    <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center py-12 sm:py-20">
 
       <!-- Left: Text content -->
       <div class="order-2 lg:order-1" style="animation:slideUp .8s ease forwards">
@@ -165,7 +183,7 @@
 
         <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-4" style="font-family:'Syne',sans-serif">
           <span class="text-muted text-2xl sm:text-3xl font-normal block mb-2" data-en="Hi, I'm" data-ar="مرحباً، أنا">Hi, I'm</span>
-          <span class="block" data-en="Ibrahem Khaled" data-ar="إبراهيم خالد">Ibrahem Khaled</span>
+          <span class="block animated-gradient-text" data-en="Ibrahem Khaled" data-ar="إبراهيم خالد">Ibrahem Khaled</span>
         </h1>
 
         <!-- Typing effect -->
@@ -179,8 +197,8 @@
 
         <!-- CTA buttons -->
         <div class="flex flex-wrap gap-4">
-          <a href="assets/cv.pdf" download aria-label="Download CV"
-            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/30 hover:-translate-y-0.5"
+          <a href="assets/Ibrahim_Khaled_CV_Advanced.pdf" download aria-label="Download CV"
+            class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/30 hover:-translate-y-0.5"
             style="background:linear-gradient(135deg,#7c3aed,#6d28d9)">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
             <span data-en="Download CV" data-ar="تحميل السيرة الذاتية">Download CV</span>
@@ -193,7 +211,7 @@
         </div>
 
         <!-- Stats row -->
-        <div class="flex flex-wrap gap-8 mt-12">
+        <div class="stats-grid mt-10 sm:mt-12">
           <div>
             <div class="stat-num text-3xl grad-text">7+</div>
             <div class="text-xs text-muted mt-1" data-en="Years Experience" data-ar="سنوات خبرة">Years Experience</div>
@@ -226,6 +244,9 @@
             alt="Ibrahem Khaled - Senior Full Stack Developer"
             class="relative z-10 w-full h-full rounded-full object-cover border-4 border-violet-600/40 animate-float"
             loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            width="320" height="320"
           />
           <!-- Floating badge -->
           <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 glass rounded-xl px-4 py-2 text-xs font-semibold text-violet-300 whitespace-nowrap z-20" style="border-color:rgba(124,58,237,.3)">
@@ -238,18 +259,20 @@
   </div>
 </section>
 
+<hr class="section-divider" />
+
 <!-- ============================================================
      ABOUT ME
 ============================================================ -->
-<section id="about" class="py-24" aria-label="About Me">
+<section id="about" class="py-16 md:py-24 section-alt" aria-label="About Me">
   <div class="blob w-80 h-80 bg-indigo-700/10 top-0 right-0" style="position:absolute"></div>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid lg:grid-cols-2 gap-16 items-center">
+    <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center about-grid">
 
       <!-- Left: image & badges -->
       <div class="reveal flex flex-col items-center gap-6">
         <div class="relative rounded-2xl overflow-hidden" style="width:100%;max-width:420px">
-          <img src="assets/ibrahem-main.jpg" alt="About Ibrahem" class="w-full rounded-2xl object-cover" style="aspect-ratio:4/5;object-position:top" loading="lazy" />
+          <img src="assets/ibrahem-main.jpg" alt="About Ibrahem" class="w-full rounded-2xl object-cover" style="aspect-ratio:4/5;object-position:top" loading="lazy" decoding="async" />
           <div class="absolute inset-0 rounded-2xl" style="background:linear-gradient(to top,rgba(15,15,19,.9) 0%,transparent 60%)"></div>
         </div>
         <!-- Info chips -->
@@ -305,7 +328,7 @@
           </div>
         </div>
 
-        <a href="assets/cv.pdf" download class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/30" style="background:linear-gradient(135deg,#7c3aed,#6d28d9)">
+        <a href="assets/Ibrahim_Khaled_CV_Advanced.pdf" download class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/30" style="background:linear-gradient(135deg,#7c3aed,#6d28d9)">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
           <span data-en="Download CV" data-ar="تحميل السيرة الذاتية">Download CV</span>
         </a>
@@ -314,20 +337,22 @@
   </div>
 </section>
 
+<hr class="section-divider" />
+
 <!-- ============================================================
      SKILLS & TECHNOLOGIES
 ============================================================ -->
-<section id="skills" class="py-24" aria-label="Skills">
+<section id="skills" class="py-16 md:py-24" aria-label="Skills">
   <div class="blob w-96 h-96 bg-violet-800/10 -bottom-20 -left-20" style="position:absolute"></div>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <div class="text-center mb-16 reveal">
+    <div class="text-center mb-10 md:mb-16 reveal">
       <p class="text-xs font-semibold tracking-widest text-violet-400 uppercase mb-3" data-en="What I Work With" data-ar="ما أعمل به">What I Work With</p>
       <h2 class="section-title inline-block font-display text-3xl sm:text-4xl font-bold" style="font-family:'Syne',sans-serif" data-en="Skills & Technologies" data-ar="المهارات والتقنيات">Skills & Technologies</h2>
     </div>
 
     <!-- Skills categories -->
-    <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
+    <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-6 reveal-stagger">
 
       <!-- Frontend -->
       <div class="glass rounded-2xl p-6 reveal">
@@ -454,13 +479,15 @@
   </div>
 </section>
 
+<hr class="section-divider" />
+
 <!-- ============================================================
      EXPERIENCE TIMELINE
 ============================================================ -->
-<section id="experience" class="py-24" aria-label="Experience">
+<section id="experience" class="py-16 md:py-24 section-alt" aria-label="Experience">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <div class="text-center mb-16 reveal">
+    <div class="text-center mb-10 md:mb-16 reveal">
       <p class="text-xs font-semibold tracking-widest text-violet-400 uppercase mb-3" data-en="Career Path" data-ar="المسار المهني">Career Path</p>
       <h2 class="section-title inline-block font-display text-3xl sm:text-4xl font-bold" style="font-family:'Syne',sans-serif" data-en="Work Experience" data-ar="الخبرة المهنية">Work Experience</h2>
     </div>
@@ -468,14 +495,14 @@
     <div class="max-w-3xl mx-auto">
       <div class="relative ps-12">
         <!-- Vertical line -->
-        <div class="timeline-connector"></div>
+        <div class="absolute top-0 bottom-0 w-[2px] bg-gradient-to-b from-violet-600 to-transparent start-[22px]"></div>
 
         <!-- Experience items -->
         <div class="space-y-12">
 
           <!-- Job 1 -->
           <div class="reveal relative">
-            <div class="absolute -start-3 top-1 w-6 h-6 rounded-full border-2 border-violet-500 flex items-center justify-center" style="background:#0f0f13">
+            <div class="absolute -start-[37px] top-6 w-6 h-6 rounded-full border-2 border-violet-500 flex items-center justify-center timeline-dot">
               <div class="w-2.5 h-2.5 rounded-full bg-violet-500"></div>
             </div>
             <div class="glass rounded-2xl p-6">
@@ -497,7 +524,7 @@
 
           <!-- Job 2 -->
           <div class="reveal relative">
-            <div class="absolute -start-3 top-1 w-6 h-6 rounded-full border-2 border-violet-500/60 flex items-center justify-center" style="background:#0f0f13">
+            <div class="absolute -start-[37px] top-6 w-6 h-6 rounded-full border-2 border-violet-500/60 flex items-center justify-center timeline-dot">
               <div class="w-2.5 h-2.5 rounded-full bg-violet-500/60"></div>
             </div>
             <div class="glass rounded-2xl p-6">
@@ -519,7 +546,7 @@
 
           <!-- Job 3 -->
           <div class="reveal relative">
-            <div class="absolute -start-3 top-1 w-6 h-6 rounded-full border-2 border-violet-500/40 flex items-center justify-center" style="background:#0f0f13">
+            <div class="absolute -start-[37px] top-6 w-6 h-6 rounded-full border-2 border-violet-500/40 flex items-center justify-center timeline-dot">
               <div class="w-2.5 h-2.5 rounded-full bg-violet-500/40"></div>
             </div>
             <div class="glass rounded-2xl p-6">
@@ -545,14 +572,16 @@
   </div>
 </section>
 
+<hr class="section-divider" />
+
 <!-- ============================================================
      FEATURED PROJECTS
 ============================================================ -->
-<section id="projects" class="py-24" aria-label="Projects">
+<section id="projects" class="py-16 md:py-24" aria-label="Projects">
   <div class="blob w-96 h-96 bg-indigo-800/10 top-10 right-0" style="position:absolute"></div>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <div class="text-center mb-12 reveal">
+    <div class="text-center mb-10 md:mb-12 reveal">
       <p class="text-xs font-semibold tracking-widest text-violet-400 uppercase mb-3" data-en="Portfolio" data-ar="الأعمال">Portfolio</p>
       <h2 class="section-title inline-block font-display text-3xl sm:text-4xl font-bold" style="font-family:'Syne',sans-serif" data-en="Featured Projects" data-ar="المشاريع المميزة">Featured Projects</h2>
     </div>
@@ -566,7 +595,7 @@
     </div>
 
     <!-- Projects grid -->
-    <div id="projects-grid" class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div id="projects-grid" class="grid md:grid-cols-2 xl:grid-cols-3 gap-6 reveal-stagger">
 
       <!-- Project 1 -->
       <div class="project-card glass rounded-2xl overflow-hidden reveal" data-category="web">
@@ -712,13 +741,15 @@
   </div>
 </section>
 
+<hr class="section-divider" />
+
 <!-- ============================================================
      TEAM / COLLABORATORS
 ============================================================ -->
-<section id="team" class="py-24" aria-label="Our Team">
+<section id="team" class="py-16 md:py-24 section-alt" aria-label="Our Team">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <div class="text-center mb-16 reveal">
+    <div class="text-center mb-10 md:mb-16 reveal">
       <p class="text-xs font-semibold tracking-widest text-violet-400 uppercase mb-3" data-en="The People" data-ar="الأشخاص">The People</p>
       <h2 class="section-title inline-block font-display text-3xl sm:text-4xl font-bold" style="font-family:'Syne',sans-serif" data-en="Team & Collaborators" data-ar="الفريق والمتعاونون">Team & Collaborators</h2>
     </div>
@@ -729,7 +760,7 @@
       <!-- Team 1: Ibrahem Khaled -->
       <div class="reveal glass rounded-2xl p-8 text-center group hover:border-violet-500/40 transition-colors" style="border:1px solid var(--surface-border)">
         <div class="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden ring-4 ring-violet-500/20 group-hover:ring-violet-500/60 transition-all">
-          <img src="assets/ibrahem-khaled.jpg" alt="Ibrahem Khaled" class="w-full h-full object-cover" loading="lazy" />
+          <img src="assets/ibrahem-khaled.jpg" alt="Ibrahem Khaled" class="w-full h-full object-cover" loading="lazy" decoding="async" width="128" height="128" />
         </div>
         <h3 class="font-display font-bold text-2xl mb-1" data-en="Ibrahem Khaled" data-ar="إبراهيم خالد">Ibrahem Khaled</h3>
         <p class="text-violet-400 text-sm font-medium mb-4" data-en="Senior Full Stack Developer" data-ar="مطور Full Stack أول">Senior Full Stack Developer</p>
@@ -743,7 +774,7 @@
       <!-- Team 2: Ali Salem -->
       <div class="reveal glass rounded-2xl p-8 text-center group hover:border-violet-500/40 transition-colors" style="border:1px solid var(--surface-border)">
         <div class="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden ring-4 ring-violet-500/20 group-hover:ring-violet-500/60 transition-all">
-          <img src="assets/ali-salem.jpg" alt="Ali Salem" class="w-full h-full object-cover" loading="lazy" />
+          <img src="assets/ali-salem.jpg" alt="Ali Salem" class="w-full h-full object-cover" loading="lazy" decoding="async" width="128" height="128" />
         </div>
         <h3 class="font-display font-bold text-2xl mb-1" data-en="Ali Salem" data-ar="علي سالم">Ali Salem</h3>
         <p class="text-violet-400 text-sm font-medium mb-4" data-en="UI/UX Designer" data-ar="مصمم UI/UX">UI/UX Designer</p>
@@ -758,14 +789,16 @@
   </div>
 </section>
 
+<hr class="section-divider" />
+
 <!-- ============================================================
      TESTIMONIALS
 ============================================================ -->
-<section id="testimonials" class="py-24" aria-label="Testimonials">
+<section id="testimonials" class="py-16 md:py-24" aria-label="Testimonials">
   <div class="blob w-80 h-80 bg-violet-900/15 top-0 left-10" style="position:absolute"></div>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <div class="text-center mb-16 reveal">
+    <div class="text-center mb-10 md:mb-16 reveal">
       <p class="text-xs font-semibold tracking-widest text-violet-400 uppercase mb-3" data-en="What Clients Say" data-ar="ما يقوله العملاء">What Clients Say</p>
       <h2 class="section-title inline-block font-display text-3xl sm:text-4xl font-bold" style="font-family:'Syne',sans-serif" data-en="Testimonials" data-ar="شهادات العملاء">Testimonials</h2>
     </div>
@@ -827,19 +860,106 @@
   </div>
 </section>
 
+<hr class="section-divider" />
+
+<!-- ============================================================
+     FAQ / FREQUENTLY ASKED QUESTIONS
+============================================================ -->
+<section id="faq" class="py-16 md:py-24 section-alt" aria-label="FAQ">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="text-center mb-10 md:mb-16 reveal">
+      <p class="text-xs font-semibold tracking-widest text-violet-400 uppercase mb-3" data-en="Common Questions" data-ar="أسئلة شائعة">Common Questions</p>
+      <h2 class="section-title inline-block font-display text-3xl sm:text-4xl font-bold" style="font-family:'Syne',sans-serif" data-en="Frequently Asked Questions" data-ar="الأسئلة الشائعة">Frequently Asked Questions</h2>
+    </div>
+
+    <div class="max-w-3xl mx-auto space-y-4">
+
+      <!-- FAQ 1 -->
+      <div class="faq-item glass reveal" onclick="toggleFaq(this)">
+        <button class="faq-question" aria-expanded="false">
+          <span data-en="What technologies do you specialize in?" data-ar="ما هي التقنيات التي تتخصص فيها؟">What technologies do you specialize in?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p data-en="I specialize in Laravel, React.js, React Native, Node.js, Next.js, TypeScript, and Python. For databases I use MySQL, PostgreSQL, and Redis. I also work with Docker, AWS, and Firebase for deployment and cloud services." data-ar="أتخصص في Laravel وReact.js وReact Native وNode.js وNext.js وTypeScript وPython. لقواعد البيانات أستخدم MySQL وPostgreSQL وRedis. أعمل أيضاً مع Docker وAWS وFirebase للنشر والخدمات السحابية.">I specialize in Laravel, React.js, React Native, Node.js, Next.js, TypeScript, and Python. For databases I use MySQL, PostgreSQL, and Redis. I also work with Docker, AWS, and Firebase for deployment and cloud services.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 2 -->
+      <div class="faq-item glass reveal" onclick="toggleFaq(this)">
+        <button class="faq-question" aria-expanded="false">
+          <span data-en="How long does a typical project take?" data-ar="كم تستغرق مدة المشروع عادةً؟">How long does a typical project take?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p data-en="Project timelines vary based on complexity. A simple website takes 1-2 weeks, a full web application 4-8 weeks, and a mobile app 6-12 weeks. I always provide a detailed timeline estimate before starting any project." data-ar="تختلف المدة حسب تعقيد المشروع. موقع بسيط يأخذ 1-2 أسبوع، تطبيق ويب كامل 4-8 أسابيع، وتطبيق موبايل 6-12 أسبوع. أقدم دائماً تقدير زمني مفصل قبل بدء أي مشروع.">Project timelines vary based on complexity. A simple website takes 1-2 weeks, a full web application 4-8 weeks, and a mobile app 6-12 weeks. I always provide a detailed timeline estimate before starting any project.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 3 -->
+      <div class="faq-item glass reveal" onclick="toggleFaq(this)">
+        <button class="faq-question" aria-expanded="false">
+          <span data-en="Do you provide ongoing support and maintenance?" data-ar="هل تقدم دعم وصيانة مستمرة؟">Do you provide ongoing support and maintenance?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p data-en="Absolutely! I offer maintenance packages that include bug fixes, security updates, performance optimization, and feature additions. I believe in building long-term relationships with my clients." data-ar="بالتأكيد! أقدم باقات صيانة تشمل إصلاح الأخطاء وتحديثات الأمان وتحسين الأداء وإضافة ميزات جديدة. أؤمن ببناء علاقات طويلة المدى مع عملائي.">Absolutely! I offer maintenance packages that include bug fixes, security updates, performance optimization, and feature additions. I believe in building long-term relationships with my clients.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 4 -->
+      <div class="faq-item glass reveal" onclick="toggleFaq(this)">
+        <button class="faq-question" aria-expanded="false">
+          <span data-en="Can you work with clients remotely?" data-ar="هل تستطيع العمل مع عملاء عن بُعد؟">Can you work with clients remotely?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p data-en="Yes! I have experience working with clients across Egypt, Saudi Arabia, UAE, and beyond. I use tools like Slack, Zoom, and Trello for seamless communication and project management." data-ar="نعم! لدي خبرة في العمل مع عملاء في مصر والسعودية والإمارات وخارجها. أستخدم أدوات مثل Slack وZoom وTrello للتواصل السلس وإدارة المشاريع.">Yes! I have experience working with clients across Egypt, Saudi Arabia, UAE, and beyond. I use tools like Slack, Zoom, and Trello for seamless communication and project management.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 5 -->
+      <div class="faq-item glass reveal" onclick="toggleFaq(this)">
+        <button class="faq-question" aria-expanded="false">
+          <span data-en="What is your pricing structure?" data-ar="ما هو هيكل التسعير لديك؟">What is your pricing structure?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p data-en="I offer both fixed-price projects and hourly rates depending on the project scope. For larger projects, I break them into milestones with payments tied to deliverables. Contact me for a free consultation and quote!" data-ar="أقدم مشاريع بسعر ثابت وأسعار بالساعة حسب نطاق المشروع. للمشاريع الكبيرة، أقسمها إلى مراحل مع دفعات مرتبطة بالتسليمات. تواصل معي للحصول على استشارة وعرض سعر مجاني!">I offer both fixed-price projects and hourly rates depending on the project scope. For larger projects, I break them into milestones with payments tied to deliverables. Contact me for a free consultation and quote!</p>
+        </div>
+      </div>
+
+      <!-- FAQ 6 -->
+      <div class="faq-item glass reveal" onclick="toggleFaq(this)">
+        <button class="faq-question" aria-expanded="false">
+          <span data-en="Do you build mobile apps for both iOS and Android?" data-ar="هل تبني تطبيقات موبايل لـ iOS و Android؟">Do you build mobile apps for both iOS and Android?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p data-en="Yes! Using React Native and Expo, I build cross-platform mobile apps that run on both iOS and Android from a single codebase. This saves time and cost while delivering a native experience on both platforms." data-ar="نعم! باستخدام React Native وExpo، أبني تطبيقات موبايل متعددة المنصات تعمل على iOS وAndroid من كود واحد. هذا يوفر الوقت والتكلفة مع تقديم تجربة أصلية على كلا المنصتين.">Yes! Using React Native and Expo, I build cross-platform mobile apps that run on both iOS and Android from a single codebase. This saves time and cost while delivering a native experience on both platforms.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
 <!-- ============================================================
      CONTACT
 ============================================================ -->
-<section id="contact" class="py-24" aria-label="Contact">
+<section id="contact" class="py-16 md:py-24 section-alt" aria-label="Contact">
   <div class="blob w-96 h-96 bg-violet-800/10 bottom-0 right-0" style="position:absolute"></div>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <div class="text-center mb-16 reveal">
+    <div class="text-center mb-10 md:mb-16 reveal">
       <p class="text-xs font-semibold tracking-widest text-violet-400 uppercase mb-3" data-en="Get in Touch" data-ar="تواصل معي">Get in Touch</p>
       <h2 class="section-title inline-block font-display text-3xl sm:text-4xl font-bold" style="font-family:'Syne',sans-serif" data-en="Let's Work Together" data-ar="لنعمل معاً">Let's Work Together</h2>
     </div>
 
-    <div class="grid lg:grid-cols-5 gap-12">
+    <div class="grid lg:grid-cols-5 gap-8 lg:gap-12 contact-grid">
 
       <!-- Contact info -->
       <div class="lg:col-span-2 reveal space-y-6">
@@ -949,10 +1069,12 @@
   </div>
 </section>
 
+</main>
+
 <!-- ============================================================
      FOOTER
 ============================================================ -->
-<footer class="border-t border-[var(--surface-border)] py-12" role="contentinfo">
+<footer class="border-t border-[var(--surface-border)] py-8 md:py-12" role="contentinfo">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="grid md:grid-cols-3 gap-8 mb-10">
 
@@ -1008,7 +1130,8 @@
 
     <div class="border-t border-[var(--surface-border)] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted">
       <p>
-        <span data-en="© 2025 Ibrahem Khaled. All rights reserved." data-ar="© 2025 إبراهيم خالد. جميع الحقوق محفوظة.">© 2025 Ibrahem Khaled. All rights reserved.</span>
+      <span data-en="© " data-ar="© ">© </span><span id="copyright-year">2025</span>
+        <span data-en=" Ibrahem Khaled. All rights reserved." data-ar=" إبراهيم خالد. جميع الحقوق محفوظة."> Ibrahem Khaled. All rights reserved.</span>
       </p>
       <p>
         <span data-en="Built with ❤️ using HTML5, Tailwind CSS & Vanilla JS" data-ar="مبني بـ ❤️ باستخدام HTML5 وTailwind CSS وVanilla JS">Built with ❤️ using HTML5, Tailwind CSS & Vanilla JS</span>
@@ -1025,6 +1148,13 @@
   style="background:linear-gradient(135deg,#7c3aed,#6d28d9)">
   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
 </button>
+
+<!-- ============================================================
+     WHATSAPP FLOATING BUTTON
+============================================================ -->
+<a href="https://wa.me/201159253196" target="_blank" rel="noopener" aria-label="Chat on WhatsApp" class="whatsapp-float">
+  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
 
 <!-- ============================================================
      JAVASCRIPT
