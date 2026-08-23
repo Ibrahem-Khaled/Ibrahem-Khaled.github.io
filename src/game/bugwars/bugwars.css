@@ -1,0 +1,218 @@
+/* ── BUG WARS · game overlay styles ── */
+
+.bw-accent {
+  color: #39ff6e;
+}
+.bw-accent-bg {
+  background: #39ff6e;
+}
+.bw-danger {
+  color: #f87171;
+}
+
+/* ── screens ── */
+.bw-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(57, 255, 110, 0.09), transparent 60%),
+    rgba(2, 6, 3, 0.88);
+  backdrop-filter: blur(3px);
+}
+
+.bw-btn-ghost {
+  border-radius: 0.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 0.72rem 1.1rem;
+  font-size: 0.8rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  color: rgba(255, 255, 255, 0.75);
+  transition: all 0.15s ease;
+}
+.bw-btn-ghost:hover {
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #fff;
+}
+
+/* ── glitch title ── */
+.bw-glitch {
+  position: relative;
+  color: #fff;
+  text-shadow:
+    0 0 18px rgba(57, 255, 110, 0.45),
+    0 0 60px rgba(57, 255, 110, 0.18);
+}
+.bw-glitch::before,
+.bw-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  width: 100%;
+  overflow: hidden;
+}
+.bw-glitch::before {
+  color: #ff4d5e;
+  animation: bw-glitch-a 2.4s infinite steps(1);
+  clip-path: inset(20% 0 55% 0);
+  opacity: 0.75;
+}
+.bw-glitch::after {
+  color: #38e1ff;
+  animation: bw-glitch-b 3.1s infinite steps(1);
+  clip-path: inset(62% 0 12% 0);
+  opacity: 0.75;
+}
+@keyframes bw-glitch-a {
+  0%, 92% { transform: none; }
+  93% { transform: translate(-5px, -2px); }
+  95% { transform: translate(4px, 1px); }
+  97% { transform: none; }
+}
+@keyframes bw-glitch-b {
+  0%, 90% { transform: none; }
+  91% { transform: translate(5px, 2px); }
+  94% { transform: translate(-4px, -1px); }
+  96% { transform: none; }
+}
+
+/* ── scanlines ── */
+.bw-scanlines {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 2px,
+    rgba(0, 0, 0, 0.16) 2px 4px
+  );
+  mix-blend-mode: multiply;
+}
+
+/* ── crosshair ── */
+.bw-cross {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  opacity: 0.9;
+}
+.bw-cross span {
+  position: absolute;
+  background: rgba(217, 255, 153, 0.95);
+  box-shadow: 0 0 4px rgba(57, 255, 110, 0.8);
+}
+.bw-cross span:nth-child(1) { left: 50%; top: 0; width: 2px; height: 7px; transform: translateX(-50%); }
+.bw-cross span:nth-child(2) { left: 50%; bottom: 0; width: 2px; height: 7px; transform: translateX(-50%); }
+.bw-cross span:nth-child(3) { top: 50%; left: 0; height: 2px; width: 7px; transform: translateY(-50%); }
+.bw-cross span:nth-child(4) { top: 50%; right: 0; height: 2px; width: 7px; transform: translateY(-50%); }
+
+/* hitmarker */
+.bw-hitmark {
+  position: absolute;
+  font-family: ui-monospace, monospace;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #eaffb0;
+  text-shadow: 0 0 8px rgba(57, 255, 110, 0.9);
+  animation: bw-hit 0.22s ease-out forwards;
+}
+@keyframes bw-hit {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* damage vignette */
+.bw-vignette {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 52%, rgba(220, 20, 30, 0.45) 100%);
+  animation: bw-hurt 0.5s ease-out forwards;
+}
+@keyframes bw-hurt {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* combo chip */
+.bw-combo {
+  border-radius: 0.25rem;
+  border: 1px solid rgba(255, 176, 32, 0.55);
+  background: rgba(255, 176, 32, 0.12);
+  padding: 0.15rem 0.5rem;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: #ffb020;
+  animation: bw-pop 0.25s ease-out;
+}
+@keyframes bw-pop {
+  0% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+/* wave banners */
+.bw-banner {
+  text-align: center;
+  animation: bw-banner-in 0.35s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+.bw-banner-title {
+  font-family: var(--font-display, inherit);
+  font-weight: 900;
+  font-size: clamp(1.6rem, 4.5vw, 2.8rem);
+  letter-spacing: 0.08em;
+  color: #39ff6e;
+  text-shadow:
+    0 0 14px rgba(57, 255, 110, 0.65),
+    0 2px 0 rgba(0, 0, 0, 0.8);
+}
+.bw-banner-sub {
+  margin-top: 0.25rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
+  color: rgba(255, 255, 255, 0.8);
+}
+.bw-banner-boss .bw-banner-title {
+  color: #ff4d5e;
+  text-shadow: 0 0 16px rgba(255, 60, 80, 0.7), 0 2px 0 rgba(0, 0, 0, 0.85);
+}
+.bw-banner-boss .bw-banner-sub {
+  color: #ffb0c0;
+}
+.bw-banner-clear .bw-banner-title {
+  color: #ffd76e;
+  text-shadow: 0 0 14px rgba(255, 200, 80, 0.6);
+}
+.bw-banner-buff .bw-banner-title {
+  color: #ffb020;
+  text-shadow: 0 0 14px rgba(255, 176, 32, 0.6);
+}
+@keyframes bw-banner-in {
+  0% { transform: scale(0.7) translateY(-12px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* blinking danger label */
+.blink {
+  animation: bw-blink 0.8s steps(1) infinite;
+}
+@keyframes bw-blink {
+  50% { opacity: 0.25; }
+}
+
+/* low-HP persistent pulse on whole frame handled via vignette reuse in Hud if needed */
+
+@media (prefers-reduced-motion: reduce) {
+  .bw-glitch::before,
+  .bw-glitch::after,
+  .bw-scanlines {
+    animation: none;
+    display: none;
+  }
+}
