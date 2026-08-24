@@ -3,6 +3,7 @@
   "private": true,
   "version": "2.0.0",
   "type": "module",
+  "homepage": "https://Ibrahem-Khaled.github.io/Ibrahem-Khaled.github.io",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
