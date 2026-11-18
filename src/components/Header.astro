@@ -1,0 +1,155 @@
+---
+import { PROFILE } from '../data/profile'
+import { getLocaleSwitchUrl, stripBase, withBase, type Locale } from '../utils/paths'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+const currentRel = stripBase(Astro.url.pathname)
+const normalized = currentRel.endsWith('/') ? currentRel : `${currentRel}/`
+const prefix = lang === 'ar' ? '/ar' : ''
+
+const navItems = [
+  {
+    href: `${prefix}/work/`,
+    match: `${prefix}/work/`,
+    label: lang === 'en' ? 'Work' : 'الأعمال',
+  },
+  {
+    href: `${prefix}/hire/`,
+    match: `${prefix}/hire/`,
+    label: lang === 'en' ? 'Hire' : 'تعاقد معي',
+  },
+  {
+    href: `${prefix}/about/`,
+    match: `${prefix}/about/`,
+    label: lang === 'en' ? 'About' : 'عنّي',
+  },
+  {
+    href: '/lab/',
+    match: '/lab/',
+    label: lang === 'en' ? 'Lab' : 'المختبر',
+  },
+]
+
+const targetLang: Locale = lang === 'en' ? 'ar' : 'en'
+const switchUrl = getLocaleSwitchUrl(Astro.url.pathname, targetLang)
+---
+
+<header class="sticky top-0 z-40 border-b border-rule bg-paper/95 backdrop-blur-xs">
+  <div class="container-swiss flex h-16 items-center justify-between gap-4">
+    <!-- Brand -->
+    <a
+      href={withBase(lang === 'ar' ? '/ar/' : '/')}
+      class="group flex items-baseline gap-2.5 text-ink no-underline"
+    >
+      <span class="font-semibold tracking-tight text-base">
+        {PROFILE.name[lang]}
+      </span>
+      <span class="hidden font-mono text-[11px] text-ink-muted sm:inline" dir="ltr">
+        / {lang === 'en' ? 'Full-Stack & AI' : 'هندسة برمجيات'}
+      </span>
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav aria-label={lang === 'en' ? 'Primary navigation' : 'التنقل الرئيسي'} class="hidden items-center gap-7 md:flex">
+      {navItems.map((item) => {
+        const active = normalized === item.match || normalized.startsWith(item.match)
+        return (
+          <a
+            href={withBase(item.href)}
+            aria-current={active ? 'page' : undefined}
+            class:list={[
+              'text-sm transition-colors duration-150',
+              active
+                ? 'font-semibold text-ink underline decoration-accent decoration-2 underline-offset-8'
+                : 'text-ink-muted hover:text-ink',
+            ]}
+          >
+            {item.label}
+          </a>
+        )
+      })}
+    </nav>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-3">
+      <a
+        href={switchUrl}
+        hreflang={targetLang}
+        class="border border-rule px-2.5 py-1 font-mono text-xs text-ink-soft transition-colors hover:border-ink hover:text-ink"
+        aria-label={targetLang === 'ar' ? 'Switch to Arabic' : 'Switch to English'}
+      >
+        {targetLang === 'ar' ? 'عربي' : 'EN'}
+      </a>
+
+      <a
+        href={withBase(PROFILE.cvPath)}
+        download="Ibrahim_Khaled_CV.pdf"
+        class="hidden border border-ink bg-ink px-3 py-1.5 font-mono text-xs font-medium text-paper transition-colors hover:border-accent hover:bg-accent sm:inline-flex"
+      >
+        {lang === 'en' ? 'CV (PDF)' : 'السيرة الذاتية'}
+      </a>
+
+      <!-- Mobile menu button -->
+      <button
+        type="button"
+        id="mobile-nav-toggle"
+        aria-expanded="false"
+        aria-controls="mobile-nav-panel"
+        aria-label={lang === 'en' ? 'Toggle menu' : 'فتح القائمة'}
+        class="inline-flex h-9 w-9 items-center justify-center border border-rule text-ink md:hidden"
+      >
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Nav Panel -->
+  <nav
+    id="mobile-nav-panel"
+    aria-label={lang === 'en' ? 'Mobile navigation' : 'قائمة الجوال'}
+    class="hidden border-t border-rule bg-paper md:hidden"
+  >
+    <div class="container-swiss flex flex-col py-3">
+      {navItems.map((item) => {
+        const active = normalized === item.match || normalized.startsWith(item.match)
+        return (
+          <a
+            href={withBase(item.href)}
+            aria-current={active ? 'page' : undefined}
+            class:list={[
+              'border-b border-rule py-3 text-sm',
+              active ? 'font-semibold text-accent' : 'text-ink-soft',
+            ]}
+          >
+            {item.label}
+          </a>
+        )
+      })}
+      <a
+        href={withBase(PROFILE.cvPath)}
+        download="Ibrahim_Khaled_CV.pdf"
+        class="mt-3 btn-primary text-center"
+      >
+        {lang === 'en' ? 'Download CV (PDF)' : 'تحميل السيرة الذاتية (PDF)'}
+      </a>
+    </div>
+  </nav>
+</header>
+
+<script is:inline>
+  (() => {
+    const btn = document.getElementById('mobile-nav-toggle')
+    const panel = document.getElementById('mobile-nav-panel')
+    if (!btn || !panel) return
+    btn.addEventListener('click', () => {
+      const open = panel.classList.toggle('hidden') === false
+      btn.setAttribute('aria-expanded', String(open))
+    })
+  })()
+</script>

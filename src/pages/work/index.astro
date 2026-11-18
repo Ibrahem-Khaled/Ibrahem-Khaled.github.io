@@ -1,0 +1,13 @@
+---
+import Base from '../../layouts/Base.astro'
+import WorkIndexView from '../../components/WorkIndexView.astro'
+import { PROFILE } from '../../data/profile'
+---
+
+<Base
+  lang="en"
+  title={`Work & Case Studies — ${PROFILE.name.en}`}
+  description="Engineering case studies, live web platforms, Google Play apps, and multi-tenant SaaS architectures by Ibrahim Khaled."
+>
+  <WorkIndexView lang="en" />
+</Base>

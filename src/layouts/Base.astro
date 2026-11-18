@@ -1,0 +1,101 @@
+---
+import '@fontsource/ibm-plex-sans/400.css'
+import '@fontsource/ibm-plex-sans/500.css'
+import '@fontsource/ibm-plex-sans/600.css'
+import '@fontsource/ibm-plex-sans/700.css'
+import '@fontsource/ibm-plex-sans-arabic/400.css'
+import '@fontsource/ibm-plex-sans-arabic/500.css'
+import '@fontsource/ibm-plex-sans-arabic/600.css'
+import '@fontsource/ibm-plex-sans-arabic/700.css'
+import '@fontsource/ibm-plex-mono/400.css'
+import '@fontsource/ibm-plex-mono/500.css'
+import '../styles/global.css'
+
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+import { PROFILE } from '../data/profile'
+import { getLocaleSwitchUrl, withBase, type Locale } from '../utils/paths'
+
+interface Props {
+  title: string
+  description: string
+  lang?: Locale
+  hideChrome?: boolean
+  ogImage?: string
+  type?: 'website' | 'article'
+}
+
+const {
+  title,
+  description,
+  lang = 'en',
+  hideChrome = false,
+  ogImage = '/og-cover.png',
+  type = 'website',
+} = Astro.props
+
+const siteOrigin = Astro.site ?? new URL('https://ibrahem-khaled.github.io')
+const canonicalUrl = new URL(Astro.url.pathname, siteOrigin).toString()
+const enAlternate = new URL(getLocaleSwitchUrl(Astro.url.pathname, 'en'), siteOrigin).toString()
+const arAlternate = new URL(getLocaleSwitchUrl(Astro.url.pathname, 'ar'), siteOrigin).toString()
+const ogImageUrl = new URL(withBase(ogImage), siteOrigin).toString()
+const baseRoot = withBase('/')
+---
+
+<!doctype html>
+<html lang={lang} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#F6F4EF" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={PROFILE.name.en} />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang="en" href={enAlternate} />
+    <link rel="alternate" hreflang="ar" href={arAlternate} />
+    <link rel="alternate" hreflang="x-default" href={enAlternate} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content={lang === 'ar' ? 'ar_EG' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Legacy HashRouter redirector for old /#/games/... links -->
+    <script is:inline define:vars={{ baseRoot }}>
+      (() => {
+        const h = window.location.hash
+        if (!h || !h.startsWith('#/')) return
+        const map = {
+          '#/games/bug-wars': 'lab/bug-wars/',
+          '#/games/tic-tac-toe': 'lab/tic-tac-toe/',
+          '#/games': 'lab/',
+        }
+        const clean = h.replace(/\/+$/, '')
+        if (map[clean]) {
+          window.location.replace(baseRoot + map[clean])
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    {!hideChrome && (
+      <a href="#main-content" class="skip-link">
+        {lang === 'en' ? 'Skip to content' : 'الانتقال إلى المحتوى'}
+      </a>
+    )}
+    {!hideChrome && <Header lang={lang} />}
+    <main id="main-content">
+      <slot />
+    </main>
+    {!hideChrome && <Footer lang={lang} />}
+  </body>
+</html>

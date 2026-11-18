@@ -1,0 +1,124 @@
+---
+title: "ماجيك لينكر: سوق متعدد التجار وبوابات دفع متعددة العملات"
+routeSlug: "magic-linker"
+order: 2
+year: "2024"
+status: "shipped"
+role: "مهندس Full-Stack (ويب، موبايل، وبوابات الدفع)"
+domain: "تجارة إلكترونية B2B / B2C"
+category: "commerce"
+summary: "منصة تجارة إلكترونية متعددة التجار (موقع ويب وتطبيق أندرويد منشور على Google Play) تخدم السوق اليمني بسلة موحدة، دردشة مباشرة مع التجار، وربط Stripe وPayPal وميسّر مع تسوية عمولات آلية."
+stack: ["Laravel", "React Native", "MySQL", "Stripe", "PayPal", "Moyasar"]
+nda: false
+lang: "ar"
+headlineMetric:
+  value: "3 بوابات دفع"
+  label: "ربط موحد لـ Stripe وPayPal وميسّر مع تسوية آلية لعمولات التجار"
+liveUrl: "https://magiclinker.com/"
+playStoreUrl: "https://play.google.com/store/apps/details?id=com.magiclink.medstore"
+coverImage:
+  src: "/images/projects/magiclinker-web.webp"
+  alt: "واجهة موقع ماجيك لينكر للتجارة متعددة البائعين"
+  width: 1006
+  height: 560
+  urlLabel: "magiclinker.com"
+diagramVariant: "magic-linker"
+team:
+  - name: "إبراهيم خالد"
+    role: "تصميم النظام، بوابات الدفع، وتطوير تطبيق React Native"
+---
+
+import ArchDiagram from '../../../components/diagrams/ArchDiagram.astro'
+import { withBase } from '../../../utils/paths'
+
+## 01 · السياق والمشكلة
+
+منصة ماجيك لينكر تجمع الموردين والمتاجر والموزعين في اليمن لتقديم تجربة شراء جملة (B2B) وتجزئة (B2C) في مكان واحد. المشتري يضيف منتجات من عدة تجار في سلة واحدة ويتوقع دفعاً واحداً بعملته المفضلة، بينما يحتاج كل تاجر لوحة مستقلة لطلباته ومخزونه ومستحقاته الصافية بعد خصم عمولة المنصة دون أي تداخل مع بيانات التجار الآخرين.
+
+## 02 · القيود الهندسية
+
+- **تعدد بوابات الدفع والعملات:** لا توجد بوابة واحدة تغطي كل البطاقات الإقليمية والدولية، ما فرض دمج **Stripe** و**PayPal** و**Moyasar** معاً بواجهة برمجية موحدة.
+- **تذبذب شبكات الموبايل:** إعادة الضغط على زر الدفع وتكرار وصول الـ Webhooks حالات طبيعية يومية ويجب ألا تسبب خصماً مزدوجاً أبداً.
+- **إطلاق الويب والموبايل بقاعدة كود رشيقة:** تسليم تطبيق فعلي على Google Play بالتوازي مع منصة الويب.
+
+## 03 · المعمارية الهندسية
+
+<ArchDiagram
+  variant="magic-linker"
+  caption="تقسيم سلة المشتري الموحدة إلى طلبات فرعية مستقلة لكل تاجر، مع طبقة Webhooks مقاومة للتكرار ودفتر تسوية عمولات غير قابل للتعديل."
+/>
+
+## 04 · شاشات التطبيق الفعلي (منشور على Google Play)
+
+شاشات حقيقية من تطبيق React Native المنشور على المتجر، تعرض الدردشة اللحظية بين المشتري والتاجر، ملفات المتاجر المستقلة، وتبديل العملات:
+
+<div class="not-prose my-8 grid grid-cols-1 gap-4 sm:grid-cols-3" dir="ltr">
+  <figure class="border border-rule bg-paper-alt p-2.5">
+    <img src={withBase('/images/projects/magiclink-app-2.webp')} alt="شاشة المحادثات المباشرة مع التجار في تطبيق ماجيك لينك" width="330" height="592" loading="lazy" decoding="async" class="w-full h-auto border border-rule" />
+    <figcaption class="mt-2 font-mono text-[11px] text-ink-muted">01 · Direct merchant messaging</figcaption>
+  </figure>
+  <figure class="border border-rule bg-paper-alt p-2.5">
+    <img src={withBase('/images/projects/magiclink-app-3.webp')} alt="صفحة التاجر والمنتجات في تطبيق ماجيك لينك" width="330" height="592" loading="lazy" decoding="async" class="w-full h-auto border border-rule" />
+    <figcaption class="mt-2 font-mono text-[11px] text-ink-muted">02 · Vendor storefront &amp; catalog</figcaption>
+  </figure>
+  <figure class="border border-rule bg-paper-alt p-2.5">
+    <img src={withBase('/images/projects/magiclink-app-1.webp')} alt="إعدادات الحساب والعملة في تطبيق ماجيك لينك" width="330" height="592" loading="lazy" decoding="async" class="w-full h-auto border border-rule" />
+    <figcaption class="mt-2 font-mono text-[11px] text-ink-muted">03 · Multi-currency preferences</figcaption>
+  </figure>
+</div>
+
+## 05 · أهم القرارات الهندسية والمقايضات
+
+| القرار | البدائل المدروسة | لماذا كان هذا الخيار الأصح |
+|---|---|---|
+| **فصل الطلب الرئيسي (`orders`) عن الطلبات الفرعية (`sub_orders`)** | جدول منتجات مسطح يكتفي بعمود `vendor_id` | عند إلغاء تاجر لمنتجه مع استمرار شحن تاجر آخر، الجدول المسطح يعقّد الاسترجاع الجزئي وحساب الشحن. الفصل يجعل لكل تاجر دورة شحن وتسوية مستقلة تماماً. |
+| **طبقة تجريد للبوابات (`PaymentGatewayContract`)** | كتابة كود كل بوابة داخل الـ Controller | اختلاف طرق التوقيع والعملات والـ callbacks بين Stripe وPayPal وميسّر كان سيفسد منطق الدفع. طبقة التجريد أبقت مسار الشراء موحداً وقابلاً للاختبار. |
+| **دفتر قيود إضافي فقط (`ledger_entries`) للعمولات** | تعديل رقم `balance` مباشرة في جدول التاجر | تعديل الرصيد مباشرة يضيع أثر التدقيق عند أي نزاع مالي. تسجيل القيود (دائن، عمولة، سحب) يضمن مطابقة مالية دقيقة لكل قرش. |
+
+## 06 · حماية الـ Webhooks ضد التكرار (Idempotency)
+
+```php
+declare(strict_types=1);
+
+final class ProcessPaymentWebhookAction
+{
+    public function handle(string $gateway, string $eventId, string $orderRef, int $paidMinor): void
+    {
+        DB::transaction(function () use ($gateway, $eventId, $orderRef, $paidMinor): void {
+            $alreadyProcessed = WebhookEvent::query()
+                ->where('gateway', $gateway)
+                ->where('external_event_id', $eventId)
+                ->lockForUpdate()
+                ->exists();
+
+            if ($alreadyProcessed) {
+                return;
+            }
+
+            WebhookEvent::create([
+                'gateway' => $gateway,
+                'external_event_id' => $eventId,
+                'processed_at' => now(),
+            ]);
+
+            $order = Order::where('reference', $orderRef)->lockForUpdate()->firstOrFail();
+
+            if ($order->status === OrderStatus::Paid || $order->total_minor !== $paidMinor) {
+                throw new PaymentMismatchException("Order {$orderRef} failed integrity check.");
+            }
+
+            $order->markPaid();
+            SettleVendorCommissionsJob::dispatch($order->id)->afterCommit();
+        });
+    }
+}
+```
+
+## 07 · النتيجة
+
+- إطلاق فعلي للويب ([magiclinker.com](https://magiclinker.com/)) وتطبيق أندرويد على [Google Play](https://play.google.com/store/apps/details?id=com.magiclink.medstore).
+- دفع موحد عبر **Stripe وPayPal وميسّر** مع عزل كامل لبيانات التجار وتسوية عمولات آلية.
+
+## 08 · ما الذي سأطوره بشكل مختلف لاحقاً
+
+> في البداية كان يتم جلب أسعار صرف العملات عند لحظة إتمام الطلب، ما قد يضيف تأخيراً طفيفاً عند بطء الشبكة. نقل أسعار الصرف إلى Snapshot مجدول في Redis يتحدث كل 15 دقيقة ويُثبّت داخل سجل الطلب لحظة إنشائه يفصل تماماً مسار الدفع الحرج عن أي اعتماد شبكي خارجي.

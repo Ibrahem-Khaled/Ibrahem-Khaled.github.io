@@ -1,0 +1,110 @@
+---
+title: "Multi-Tenant ERP/CRM & Fuel Stations SaaS Architecture"
+routeSlug: "multi-tenant-saas"
+order: 4
+year: "2025–2026"
+status: "in-progress"
+role: "Lead Systems Architect"
+domain: "Enterprise Multi-Tenant SaaS"
+category: "saas"
+summary: "Isolated multi-tenant Laravel cloud architecture (Stancl/Tenancy) powering automated vendor storefronts, CRM/rental workflows, and an active 2026 multi-tenant fuel station management platform."
+stack: ["Laravel", "Stancl/Tenancy", "PostgreSQL", "MySQL", "Redis", "React", "Docker"]
+nda: true
+lang: "en"
+headlineMetric:
+  value: "100% Isolated"
+  label: "Dedicated database, cache namespace & queue context per tenant via dynamic subdomains"
+diagramVariant: "multi-tenant-saas"
+team:
+  - name: "Ibrahim Khaled"
+    role: "Lead Architect — Tenancy Kernel, Ledger Design & Full-Stack"
+---
+
+import Wireframe from '../../../components/Wireframe.astro'
+
+## 01 · Context
+
+Over 2025–2026, I designed a reusable multi-tenant SaaS core used across two high-stakes enterprise domains:
+1. **Enterprise ERP/CRM & Rental Cloud (Shipped, 2025):** Automated vendor storefronts, CRM pipelines, and rental inventory management — each business running under its own dynamic subdomain.
+2. **Multi-Tenant Fuel Stations Management Platform (Active Build, 2026):** Multi-branch fuel operators managing underground tank levels, pump meter readings, shift cash reconciliation, and corporate fleet credit accounts under strict tenant isolation.
+
+In both domains, **cross-tenant data leakage is catastrophic** — a single missing `WHERE tenant_id = ?` clause would expose one operator's financial ledger or fuel inventory to a competitor.
+
+## 02 · Constraints
+
+- **Hard financial & operational isolation:** Clients explicitly requested separate databases per organization to simplify per-tenant backups, audits, and compliance offboarding.
+- **Zero-touch onboarding:** Provisioning a new organization (subdomain DNS routing, isolated DB creation, migrations, seed roles, and storage prefix) must run automatically without manual DevOps work.
+- **Concurrency on shift reconciliation:** Fuel station shifts close concurrently across multiple attendants and pumps; meter differences and fleet invoices must reconcile inside atomic transactions.
+
+## 03 · Tenant Operations Schematic (NDA Redacted)
+
+<Wireframe
+  variant="tenant-console"
+  caption="Abstract representation of an isolated fuel-station tenant console enforcing row locks on shift meter reconciliation."
+/>
+
+## 04 · Key Engineering Decisions & Trade-offs
+
+| Decision | Alternatives Considered | Why This Won |
+|---|---|---|
+| **Database-per-Tenant (`Stancl/Tenancy`)** | Shared database with global `tenant_id` Eloquent scopes | Global scopes fail silently when anyone writes a raw `DB::table()` query or forgets a scope on a reporting join. Database-per-tenant enforces isolation at the connection layer, lets us restore one tenant's backup independently, and satisfies enterprise audit requirements. *Trade-off:* higher migration orchestration complexity, solved via automated queued `tenants:migrate` pipelines. |
+| **Cached Central Domain Resolution + Prefixed Redis** | Querying central DB on every request, or shared Redis keys | Resolving `station-a.platform.io` from central DB on every HTTP call creates a bottleneck. Caching domain-to-tenant maps and strictly prefixing Redis cache/session/queue keys per tenant keeps latency flat while preventing cache collisions. |
+| **Tenant-Aware Queue Payloads** | Running standard Laravel jobs without tenant bootstrapper | Background jobs (PDF invoices, daily shift summaries, ERP syncs) run outside HTTP request lifecycles. Using `Stancl/Tenancy`'s queue bootstrapper serializes `tenant_id` into every job payload and re-initializes the exact tenant DB before execution. |
+
+## 05 · Tenant-Scoped Shift Reconciliation (Excerpt)
+
+How the fuel-station module reconciles pump meter readings safely inside an isolated tenant database without race conditions when two supervisors edit the same shift:
+
+```php
+declare(strict_types=1);
+
+final class ClosePumpShiftAction
+{
+    public function execute(int $shiftId, float $closingMeter, float $cashCollected): ShiftClosure
+    {
+        return DB::transaction(function () use ($shiftId, $closingMeter, $cashCollected): ShiftClosure {
+            // Runs automatically on the active tenant's isolated DB connection
+            $shift = PumpShift::query()
+                ->whereKey($shiftId)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($shift->closed_at !== null) {
+                throw new DomainException("Shift #{$shiftId} is already closed.");
+            }
+
+            if ($closingMeter < $shift->opening_meter) {
+                throw new DomainException("Closing meter cannot be less than opening meter.");
+            }
+
+            $litersDispensed = round($closingMeter - $shift->opening_meter, 2);
+            $expectedTotal = round($litersDispensed * $shift->unit_price, 2);
+            $variance = round($cashCollected - $expectedTotal, 2);
+
+            $shift->update([
+                'closing_meter' => $closingMeter,
+                'liters_dispensed' => $litersDispensed,
+                'expected_amount' => $expectedTotal,
+                'cash_collected' => $cashCollected,
+                'variance_amount' => $variance,
+                'closed_at' => now(),
+            ]);
+
+            // Tenant-aware job: automatically re-hydrates this tenant's DB in the worker
+            DispatchShiftAuditReportJob::dispatch($shift->id)->afterCommit();
+
+            return new ShiftClosure($shift->id, $litersDispensed, $variance);
+        });
+    }
+}
+```
+
+## 06 · Outcome
+
+- **Shipped the Multi-Tenant ERP/CRM & Rental SaaS** in 2025 with automated subdomain onboarding and strict database isolation.
+- **Reused and hardened the same tenancy kernel** in 2026 to accelerate the Multi-Tenant Fuel Stations platform — avoiding months of duplicated infrastructure work.
+- Eliminated an entire class of cross-tenant query bugs at the architectural level.
+
+## 07 · What I'd Do Differently Next Time
+
+> Running schema migrations sequentially across dozens of tenant databases during a release can stretch deployment windows if one tenant has a heavy table lock. For the 2026 fuel stations platform, I am pairing expand-and-contract zero-downtime migrations with batched parallel migration workers and automated per-tenant health checks so a single slow tenant never blocks the fleet.

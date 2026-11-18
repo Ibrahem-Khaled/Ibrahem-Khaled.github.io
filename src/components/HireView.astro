@@ -1,0 +1,297 @@
+---
+import { PROFILE } from '../data/profile'
+import { withBase, type Locale } from '../utils/paths'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+
+const models = [
+  {
+    num: '01',
+    title: { en: 'Full Product Build (Milestone Fixed-Scope)', ar: 'بناء منتج متكامل (مراحل وتسعير ثابت)' },
+    timeline: { en: '4–12 weeks', ar: '4 – 12 أسبوعاً' },
+    desc: {
+      en: 'End-to-end delivery of a multi-tenant SaaS, B2B/B2C marketplace, custom LMS, or cross-platform mobile app — from SQL schema and APIs to Play Store / cloud deployment.',
+      ar: 'تسليم كامل لمنصة SaaS متعددة المستأجرين أو سوق متعدد التجار أو منصة تعليمية أو تطبيق موبايل — من تصميم قاعدة البيانات حتى النشر على الخادم وGoogle Play.',
+    },
+    deliverables: {
+      en: ['Written architecture spec & milestone plan before code starts', 'Weekly staging URLs you can test directly', 'Full Git ownership, deployment scripts & handover docs'],
+      ar: ['وثيقة معمارية وخطة مراحل مكتوبة قبل البدء', 'نسخ تجريبية أسبوعية تختبرها بنفسك', 'ملكية كاملة للكود على Git وسكربتات النشر والتوثيق'],
+    },
+  },
+  {
+    num: '02',
+    title: { en: 'Senior Remote Role or Monthly Retainer', ar: 'وظيفة Senior عن بُعد أو تعاقد شهري' },
+    timeline: { en: 'Full-time / Part-time', ar: 'دوام كامل / جزئي' },
+    desc: {
+      en: 'Embed directly with your engineering team to own backend architecture (Laravel/Node/Python), React/React Native delivery, payment infrastructure, or CI/CD hardening.',
+      ar: 'الاندماج المباشر مع فريقك الهندسي لقيادة المعمارية (Laravel/Node/Python) وتطوير واجهات React/React Native أو أنظمة الدفع والأتمتة.',
+    },
+    deliverables: {
+      en: ['UTC+2 timezone — strong overlap with Gulf, EU & UK', 'Direct async communication (Slack, Linear, Jira, GitHub PRs)', 'Production-ready code with strict typing & transactional safety'],
+      ar: ['توقيت UTC+2 متوافق تماماً مع الخليج وأوروبا', 'تواصل منظم عبر Slack وGitHub وJira', 'كود إنتاجي صارم الأنواع وآمن ضد أخطاء التزامن'],
+    },
+  },
+  {
+    num: '03',
+    title: { en: 'AI Migration & Performance Audit', ar: 'توطين الذكاء الاصطناعي ومراجعة الأداء' },
+    timeline: { en: '1–3 weeks', ar: '1 – 3 أسابيع' },
+    desc: {
+      en: 'Move expensive commercial LLM workflows to self-hosted open-source models (e.g., Qwen), refactor slow MySQL/PostgreSQL queries, or harden multi-tenant isolation & payment webhooks.',
+      ar: 'نقل ميزات الـ LLM المكلفة من الـ APIs التجارية إلى نماذج مفتوحة المصدر مستضافة ذاتياً (مثل Qwen)، أو تسريع استعلامات قواعد البيانات وتأمين بوابات الدفع.',
+    },
+    deliverables: {
+      en: ['Measured latency & cost baseline before/after', 'Zero-downtime migration path with circuit-breaker fallback', 'Concrete PRs, not just a slide deck'],
+      ar: ['قياس فعلي للتكلفة وزمن الاستجابة قبل وبعد', 'خطة انتقال بدون توقف للخدمة مع مسار بديل آمن', 'تعديلات كود جاهزة للإنتاج وليس مجرد تقرير نظري'],
+    },
+  },
+]
+
+const processSteps = [
+  {
+    step: '01',
+    title: { en: '30-Min Technical Scoping', ar: 'جلسة تحليل نطاق (30 دقيقة)' },
+    body: {
+      en: 'We define the real business constraints, integrations (payments, multi-tenancy, mobile stores, AI), and what must ship in V1.',
+      ar: 'نحدد المتطلبات الفعلية والقيود والتكاملات (الدفع، عزل المستأجرين، المتاجر، الذكاء الاصطناعي) وما يجب إطلاقه في الإصدار الأول.',
+    },
+  },
+  {
+    step: '02',
+    title: { en: 'Schema & Milestone Proposal', ar: 'مقترح المعمارية والمراحل' },
+    body: {
+      en: 'Within 48 hours you get a concrete breakdown: milestones, delivery dates, tech choices, and fixed pricing tied to deliverables.',
+      ar: 'خلال 48 ساعة تستلم خطة واضحة: المراحل، تواريخ التسليم، الاختيارات التقنية، وتسعير مرتبط بتسليمات ملموسة.',
+    },
+  },
+  {
+    step: '03',
+    title: { en: 'Weekly Staging Releases', ar: 'إطلاقات تجريبية أسبوعية' },
+    body: {
+      en: 'No disappearing for two months. You review live staging builds and working APK/TestFlight links every week.',
+      ar: 'لا اختفاء لشهور — تراجع نسخاً حية شغالة على Staging وروابط اختبار للتطبيق كل أسبوع.',
+    },
+  },
+  {
+    step: '04',
+    title: { en: 'Production Launch & Maintenance', ar: 'الإطلاق الإنتاجي والدعم' },
+    body: {
+      en: 'Server setup, Docker/CI pipelines, Google Play release, and optional post-launch SLA maintenance (up to 1+ year proven track record).',
+      ar: 'تجهيز الخوادم وDocker وCI/CD ورفع التطبيقات على المتاجر، مع باقات صيانة واستقرار بعد الإطلاق.',
+    },
+  },
+]
+---
+
+<section class="container-swiss pt-12 pb-16 md:pt-16">
+  <div class="border-b border-ink pb-8">
+    <p class="meta-label">{lang === 'en' ? 'Engagement & Hiring' : 'التعاقد والتوظيف'}</p>
+    <h1 class="mt-2 max-w-3xl text-3xl font-semibold tracking-tight text-ink sm:text-5xl sm:leading-[1.1]">
+      {lang === 'en'
+        ? 'Clear scope, measurable engineering, and zero handoff gaps.'
+        : 'نطاق واضح، هندسة قابلة للقياس، ومسؤولية كاملة حتى الإطلاق.'}
+    </h1>
+    <p class="mt-4 max-w-2xl text-base text-ink-soft">
+      {lang === 'en'
+        ? 'Whether you are hiring for a Senior Full-Stack remote role or commissioning a custom SaaS, marketplace, mobile app, or AI build — here is exactly how we work together.'
+        : 'سواء كنت تبحث عن مهندس أول للانضمام لفريقك عن بُعد، أو تريد تنفيذ منصة SaaS أو متجر أو تطبيق موبايل — إليك بالضبط كيف نعمل معاً.'}
+    </p>
+  </div>
+
+  <!-- Engagement Models -->
+  <div class="mt-12 grid gap-6 lg:grid-cols-3">
+    {models.map((m) => (
+      <div class="flex flex-col justify-between border border-ink bg-paper-alt/50 p-6">
+        <div>
+          <div class="flex items-center justify-between font-mono text-xs text-ink-muted">
+            <span class="font-semibold text-accent">{m.num}</span>
+            <span>{m.timeline[lang]}</span>
+          </div>
+          <h2 class="mt-3 text-xl font-semibold text-ink">{m.title[lang]}</h2>
+          <p class="mt-3 text-sm leading-relaxed text-ink-soft">{m.desc[lang]}</p>
+        </div>
+        <ul class="mt-6 space-y-2 border-t border-rule pt-4 text-xs text-ink-soft">
+          {m.deliverables[lang].map((item) => (
+            <li class="flex gap-2">
+              <span class="font-mono text-accent">—</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+
+  <!-- Good Fit vs Not a Fit (Honesty builds trust) -->
+  <div class="mt-16 grid gap-6 border-y border-rule py-12 md:grid-cols-2">
+    <div>
+      <p class="meta-label text-accent">{lang === 'en' ? 'Best Fit' : 'متى أكون الخيار الأفضل'}</p>
+      <ul class="mt-4 space-y-2.5 text-sm text-ink-soft">
+        <li>• {lang === 'en' ? 'Multi-tenant SaaS, ERP/CRM, marketplaces, and payment-heavy platforms.' : 'منصات SaaS متعددة المستأجرين، ERP/CRM، والأسواق الإلكترونية وأنظمة الدفع.'}</li>
+        <li>• {lang === 'en' ? 'Web + React Native mobile apps needing one accountable lead engineer.' : 'مشاريع تجمع الويب وتطبيق الموبايل (React Native) وتحتاج مهندساً واحداً مسؤولاً.'}</li>
+        <li>• {lang === 'en' ? 'Teams wanting to self-host LLMs (Qwen) or build real AI agents without runaway API bills.' : 'فرق تريد استضافة نماذج AI محلياً (Qwen) أو بناء وكلاء ذكيين بتكلفة منضبطة.'}</li>
+        <li>• {lang === 'en' ? 'Founders who also need UI/UX design — available via partnership with Ali Salem.' : 'مؤسسون يحتاجون تصميم UI/UX + برمجة معاً (عبر شراكتي مع المصمم علي سالم).'}</li>
+      </ul>
+    </div>
+    <div class="border-t border-rule pt-6 md:border-t-0 md:border-s md:pt-0 md:ps-8">
+      <p class="meta-label">{lang === 'en' ? 'Probably Not a Fit' : 'متى لا أكون الخيار المناسب'}</p>
+      <ul class="mt-4 space-y-2.5 text-sm text-ink-muted">
+        <li>• {lang === 'en' ? 'Quick 2-day WordPress/Wix template edits or no-code brochure sites.' : 'تعديلات قوالب WordPress السريعة أو مواقع تعريفية جاهزة في يومين.'}</li>
+        <li>• {lang === 'en' ? 'Projects with no defined owner or undefined scope looking only for the lowest hourly bid.' : 'مشاريع تبحث عن أرخص سعر ممكن على حساب جودة قواعد البيانات والأمان.'}</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 4-Step Process -->
+  <div class="mt-16">
+    <p class="meta-label">{lang === 'en' ? 'Delivery Cadence' : 'مسار التنفيذ'}</p>
+    <h2 class="mt-2 text-2xl font-semibold tracking-tight text-ink">
+      {lang === 'en' ? 'How a Project Moves From Brief to Production' : 'كيف ننتقل من الفكرة إلى الإطلاق الفعلي'}
+    </h2>
+    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {processSteps.map((s) => (
+        <div class="border-t-2 border-ink pt-4">
+          <span class="font-mono text-xs font-semibold text-accent">{s.step}</span>
+          <h3 class="mt-2 text-base font-semibold text-ink">{s.title[lang]}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-ink-soft">{s.body[lang]}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Direct Contact + Instant Brief Builder -->
+  <div id="contact" class="mt-20 grid gap-10 border-2 border-ink bg-paper-alt p-6 sm:p-10 lg:grid-cols-12">
+    <div class="lg:col-span-5">
+      <p class="meta-label">{lang === 'en' ? 'Start the Conversation' : 'ابدأ التواصل الآن'}</p>
+      <h2 class="mt-2 text-2xl font-semibold tracking-tight text-ink">
+        {lang === 'en' ? 'Direct Channels' : 'قنوات التواصل المباشرة'}
+      </h2>
+      <p class="mt-3 text-sm leading-relaxed text-ink-soft">
+        {lang === 'en'
+          ? 'No contact forms that vanish into void. Message me directly on WhatsApp or email — I typically respond within a few hours (UTC+2).'
+          : 'بدون نماذج تختفي بلا رد. تواصل معي مباشرة عبر واتساب أو البريد الإلكتروني — أرد عادةً خلال ساعات قليلة.'}
+      </p>
+
+      <dl class="mt-6 space-y-4 border-t border-rule pt-5 text-sm">
+        <div>
+          <dt class="meta-label">Email</dt>
+          <dd class="mt-1 font-mono">
+            <a href={`mailto:${PROFILE.email}`} class="underline hover:text-accent" dir="ltr">{PROFILE.email}</a>
+          </dd>
+        </div>
+        <div>
+          <dt class="meta-label">WhatsApp / Phone</dt>
+          <dd class="mt-1 font-mono">
+            <a href={PROFILE.whatsapp} target="_blank" rel="noopener noreferrer" class="underline hover:text-accent" dir="ltr">
+              {PROFILE.phoneDisplay} ↗
+            </a>
+          </dd>
+        </div>
+        <div>
+          <dt class="meta-label">Profiles</dt>
+          <dd class="mt-1 flex gap-4 font-mono text-xs">
+            <a href={PROFILE.linkedin} target="_blank" rel="noopener noreferrer" class="underline hover:text-accent">LinkedIn ↗</a>
+            <a href={PROFILE.github} target="_blank" rel="noopener noreferrer" class="underline hover:text-accent">GitHub ↗</a>
+            <a href={withBase(PROFILE.cvPath)} download="Ibrahim_Khaled_CV.pdf" class="underline hover:text-accent">CV PDF ↓</a>
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- Structured Brief Builder (launches pre-filled WhatsApp or Email) -->
+    <div class="border-t border-rule pt-8 lg:col-span-7 lg:border-t-0 lg:border-s lg:pt-0 lg:ps-10">
+      <p class="meta-label">{lang === 'en' ? 'Quick Project / Role Brief' : 'ملخص سريع للمشروع أو الوظيفة'}</p>
+      <form id="brief-form" class="mt-4 space-y-4" data-email={PROFILE.email} data-wa={PROFILE.whatsapp}>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="brief-name" class="block font-mono text-xs text-ink-muted">
+              {lang === 'en' ? 'Your Name' : 'الاسم'}
+            </label>
+            <input
+              id="brief-name"
+              name="name"
+              type="text"
+              required
+              placeholder={lang === 'en' ? 'Ahmed / Engineering Manager' : 'الاسم أو الشركة'}
+              class="mt-1.5 w-full border border-rule bg-paper px-3 py-2 text-sm text-ink focus:border-ink focus:outline-none"
+            />
+          </div>
+          <div>
+            <label for="brief-type" class="block font-mono text-xs text-ink-muted">
+              {lang === 'en' ? 'Engagement Type' : 'نوع التواصل'}
+            </label>
+            <select
+              id="brief-type"
+              name="type"
+              class="mt-1.5 w-full border border-rule bg-paper px-3 py-2 text-sm text-ink focus:border-ink focus:outline-none"
+            >
+              <option value="Senior Remote Role">{lang === 'en' ? 'Senior Remote Role' : 'وظيفة Senior عن بُعد'}</option>
+              <option value="Full Product / SaaS Build">{lang === 'en' ? 'Full Product / SaaS Build' : 'بناء منصة SaaS أو منتج كامل'}</option>
+              <option value="Mobile App (React Native)">{lang === 'en' ? 'Mobile App (React Native)' : 'تطبيق موبايل (React Native)'}</option>
+              <option value="AI / Self-Hosted LLM">{lang === 'en' ? 'AI / Self-Hosted LLM' : 'ذكاء اصطناعي / نموذج LLM محلي'}</option>
+              <option value="Architecture / Audit">{lang === 'en' ? 'Architecture / Performance Audit' : 'مراجعة معمارية أو أداء'}</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="brief-details" class="block font-mono text-xs text-ink-muted">
+            {lang === 'en' ? 'What are we building or solving? (Include timeline if known)' : 'ما الذي نريد بناءه أو حله؟ (مع المدة المتوقعة إن وجدت)'}
+          </label>
+          <textarea
+            id="brief-details"
+            name="details"
+            rows="4"
+            required
+            placeholder={lang === 'en' ? 'Brief overview of the system, constraints, or role...' : 'وصف مختصر للمشروع أو المتطلبات التقنية...'}
+            class="mt-1.5 w-full border border-rule bg-paper px-3 py-2 text-sm text-ink focus:border-ink focus:outline-none"
+          ></textarea>
+        </div>
+
+        <div class="flex flex-wrap gap-3 pt-1">
+          <button type="submit" data-channel="whatsapp" class="btn-primary">
+            {lang === 'en' ? 'Send via WhatsApp ↗' : 'إرسال عبر واتساب ↗'}
+          </button>
+          <button type="submit" data-channel="email" class="btn-secondary">
+            {lang === 'en' ? 'Open in Email ↗' : 'إرسال عبر البريد ↗'}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const form = document.getElementById('brief-form')
+    if (!form) return
+    let activeChannel = 'whatsapp'
+    form.querySelectorAll('button[data-channel]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        activeChannel = btn.getAttribute('data-channel') || 'whatsapp'
+      })
+    })
+    form.addEventListener('submit', (e) => {
+      e.preventDefault()
+      const data = new FormData(form)
+      const name = String(data.get('name') || '').trim()
+      const type = String(data.get('type') || '').trim()
+      const details = String(data.get('details') || '').trim()
+      if (!name || !details) return
+
+      const email = form.getAttribute('data-email') || ''
+      const wa = form.getAttribute('data-wa') || ''
+      const body = `Hi Ibrahim,\n\nName: ${name}\nTopic: ${type}\n\n${details}`
+
+      if (activeChannel === 'email') {
+        const mailto = `mailto:${email}?subject=${encodeURIComponent(`[${type}] Inquiry from ${name}`)}&body=${encodeURIComponent(body)}`
+        window.location.href = mailto
+      } else {
+        window.open(`${wa}?text=${encodeURIComponent(body)}`, '_blank', 'noopener,noreferrer')
+      }
+    })
+  })()
+</script>

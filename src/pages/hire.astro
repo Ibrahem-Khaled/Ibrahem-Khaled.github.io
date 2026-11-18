@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro'
+import HireView from '../components/HireView.astro'
+import { PROFILE } from '../data/profile'
+---
+
+<Base
+  lang="en"
+  title={`Hire & Engagement — ${PROFILE.name.en}`}
+  description="Engagement models, delivery process, and direct contact for Senior Full-Stack remote roles and custom SaaS, mobile, or AI builds."
+>
+  <HireView lang="en" />
+</Base>

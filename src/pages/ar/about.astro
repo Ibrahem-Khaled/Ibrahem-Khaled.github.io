@@ -1,0 +1,13 @@
+---
+import Base from '../../layouts/Base.astro'
+import AboutView from '../../components/AboutView.astro'
+import { PROFILE } from '../../data/profile'
+---
+
+<Base
+  lang="ar"
+  title={`عنّي والمسار المهني — ${PROFILE.name.ar}`}
+  description="5 سنوات خبرة في هندسة البرمجيات: منصات SaaS متعددة المستأجرين، تطبيقات React Native، بوابات الدفع، ونماذج AI مستضافة ذاتياً."
+>
+  <AboutView lang="ar" />
+</Base>

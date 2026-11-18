@@ -1,7 +1,6 @@
 /* ── BUG WARS · menu / pause / game-over screens ── */
 
 import { useMemo } from 'react'
-import { Link } from 'react-router-dom'
 import { useGame } from './store'
 import { requestLock, startRun, toggleMuteAndApply } from './flow'
 import { BUGS, BOSS_EVERY } from './constants'
@@ -10,7 +9,7 @@ function isTouchOnly() {
   return typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches && !window.matchMedia('(any-hover: hover)').matches
 }
 
-export function MenuScreen({ lang }: { lang: 'en' | 'ar' }) {
+export function MenuScreen({ lang, backHref }: { lang: 'en' | 'ar'; backHref: string }) {
   const best = useGame((s) => s.best)
   const muted = useGame((s) => s.muted)
   const touch = useMemo(isTouchOnly, [])
@@ -64,9 +63,9 @@ export function MenuScreen({ lang }: { lang: 'en' | 'ar' }) {
           >
             {muted ? '🔇' : '🔊'}
           </button>
-          <Link to="/games" className="px-2 py-3 font-mono text-sm text-white/55 underline-offset-4 hover:text-white hover:underline">
+          <a href={backHref} className="px-2 py-3 font-mono text-sm text-white/55 underline-offset-4 hover:text-white hover:underline">
             {t.exit}
-          </Link>
+          </a>
         </div>
 
         {best > 0 && (
@@ -104,7 +103,7 @@ const CONTROLS: [string, string][] = [
   ['R', 'Reload'],
 ]
 
-export function PauseScreen({ lang }: { lang: 'en' | 'ar' }) {
+export function PauseScreen({ lang, backHref }: { lang: 'en' | 'ar'; backHref: string }) {
   const t = STRINGS[lang]
   return (
     <div className="bw-screen" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
@@ -127,16 +126,16 @@ export function PauseScreen({ lang }: { lang: 'en' | 'ar' }) {
           >
             {t.restart}
           </button>
-          <Link to="/games" className="bw-btn-ghost">
+          <a href={backHref} className="bw-btn-ghost">
             {t.exit}
-          </Link>
+          </a>
         </div>
       </div>
     </div>
   )
 }
 
-export function GameOverScreen({ lang }: { lang: 'en' | 'ar' }) {
+export function GameOverScreen({ lang, backHref }: { lang: 'en' | 'ar'; backHref: string }) {
   const score = useGame((s) => s.score)
   const best = useGame((s) => s.best)
   const kills = useGame((s) => s.kills)
@@ -185,9 +184,9 @@ export function GameOverScreen({ lang }: { lang: 'en' | 'ar' }) {
           >
             {t.retry}
           </button>
-          <Link to="/games" className="bw-btn-ghost">
+          <a href={backHref} className="bw-btn-ghost">
             {t.exit}
-          </Link>
+          </a>
         </div>
       </div>
     </div>

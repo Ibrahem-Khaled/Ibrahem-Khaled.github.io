@@ -1,0 +1,13 @@
+---
+import Base from '../../../layouts/Base.astro'
+import WorkIndexView from '../../../components/WorkIndexView.astro'
+import { PROFILE } from '../../../data/profile'
+---
+
+<Base
+  lang="ar"
+  title={`الأعمال ودراسات الحالة — ${PROFILE.name.ar}`}
+  description="دراسات حالة هندسية، منصات ويب حية، تطبيقات منشورة على Google Play، ومعماريات SaaS متعددة المستأجرين."
+>
+  <WorkIndexView lang="ar" />
+</Base>

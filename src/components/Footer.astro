@@ -1,0 +1,69 @@
+---
+import { PROFILE } from '../data/profile'
+import { withBase, type Locale } from '../utils/paths'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+const prefix = lang === 'ar' ? '/ar' : ''
+const year = new Date().getFullYear()
+---
+
+<footer class="mt-24 border-t border-ink bg-paper-alt/60">
+  <div class="container-swiss py-14">
+    <div class="grid gap-10 md:grid-cols-12">
+      <!-- Identity -->
+      <div class="md:col-span-5">
+        <p class="font-semibold text-ink">{PROFILE.name[lang]}</p>
+        <p class="mt-2 max-w-sm text-sm leading-relaxed text-ink-muted">
+          {PROFILE.positioning[lang]}
+        </p>
+        <p class="mt-4 font-mono text-xs text-ink-muted">
+          {PROFILE.location[lang]}
+        </p>
+      </div>
+
+      <!-- Navigation -->
+      <div class="md:col-span-3">
+        <p class="meta-label mb-3">{lang === 'en' ? 'Pages' : 'الصفحات'}</p>
+        <ul class="space-y-2 text-sm text-ink-soft">
+          <li><a href={withBase(`${prefix}/work/`)} class="hover:text-accent">{lang === 'en' ? 'Case Studies & Work' : 'دراسات الحالة والأعمال'}</a></li>
+          <li><a href={withBase(`${prefix}/hire/`)} class="hover:text-accent">{lang === 'en' ? 'Hire / Engagement' : 'التعاقد ونماذج العمل'}</a></li>
+          <li><a href={withBase(`${prefix}/about/`)} class="hover:text-accent">{lang === 'en' ? 'About & Experience' : 'المسار المهني والفريق'}</a></li>
+          <li><a href={withBase('/lab/')} class="hover:text-accent">{lang === 'en' ? 'Engineering Lab (3D)' : 'المختبر والتجارب'}</a></li>
+        </ul>
+      </div>
+
+      <!-- Direct Contact -->
+      <div class="md:col-span-4">
+        <p class="meta-label mb-3">{lang === 'en' ? 'Direct Contact' : 'تواصل مباشر'}</p>
+        <ul class="space-y-2 text-sm text-ink-soft">
+          <li>
+            <a href={`mailto:${PROFILE.email}`} class="hover:text-accent" dir="ltr">
+              {PROFILE.email}
+            </a>
+          </li>
+          <li>
+            <a href={PROFILE.whatsapp} target="_blank" rel="noopener noreferrer" class="hover:text-accent" dir="ltr">
+              WhatsApp · {PROFILE.phoneDisplay}
+            </a>
+          </li>
+          <li class="flex flex-wrap gap-4 pt-1 font-mono text-xs">
+            <a href={PROFILE.github} target="_blank" rel="noopener noreferrer" class="underline hover:text-accent">GitHub ↗</a>
+            <a href={PROFILE.linkedin} target="_blank" rel="noopener noreferrer" class="underline hover:text-accent">LinkedIn ↗</a>
+            <a href={withBase(PROFILE.cvPath)} download="Ibrahim_Khaled_CV.pdf" class="underline hover:text-accent">
+              {lang === 'en' ? 'CV PDF ↓' : 'السيرة الذاتية ↓'}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-col justify-between gap-2 border-t border-rule pt-6 font-mono text-xs text-ink-muted sm:flex-row">
+      <p>© {year} {PROFILE.name.en}. {lang === 'en' ? 'All data synced from one source.' : 'كافة البيانات متزامنة مع السيرة الذاتية.'}</p>
+      <p dir="ltr">Astro · MDX · Static HTML · Zero trackers</p>
+    </div>
+  </div>
+</footer>

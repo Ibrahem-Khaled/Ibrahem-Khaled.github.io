@@ -1,0 +1,130 @@
+---
+title: "Magic Linker: Multi-Merchant Marketplace & Multi-Currency Payments"
+routeSlug: "magic-linker"
+order: 2
+year: "2024"
+status: "shipped"
+role: "Full-Stack Software Engineer (Web, Mobile & Payments)"
+domain: "B2B / B2C Commerce"
+category: "commerce"
+summary: "Multi-vendor e-commerce web platform and Google Play mobile application serving Yemeni merchants and buyers, with unified multi-vendor carts and automated Stripe, PayPal, and Moyasar settlements."
+stack: ["Laravel", "React Native", "MySQL", "Stripe", "PayPal", "Moyasar"]
+nda: false
+lang: "en"
+headlineMetric:
+  value: "3 Gateways"
+  label: "Unified Stripe, PayPal & Moyasar multi-currency checkout + automated vendor commission splits"
+liveUrl: "https://magiclinker.com/"
+playStoreUrl: "https://play.google.com/store/apps/details?id=com.magiclink.medstore"
+coverImage:
+  src: "/images/projects/magiclinker-web.webp"
+  alt: "Magic Linker multi-vendor marketplace web storefront"
+  width: 1006
+  height: 560
+  urlLabel: "magiclinker.com"
+diagramVariant: "magic-linker"
+team:
+  - name: "Ibrahim Khaled"
+    role: "Full-Stack Architecture, Payments & React Native App"
+---
+
+import ArchDiagram from '../../../components/diagrams/ArchDiagram.astro'
+import { withBase } from '../../../utils/paths'
+
+## 01 · Context
+
+Magic Linker connects suppliers, distributors, and independent retail shops across Yemen with both B2B wholesale buyers and B2C consumers. A single buyer frequently adds items from three or four different merchants into one cart, expects to pay once in their preferred currency (USD, SAR, or local settlement), and expects independent delivery tracking per store.
+
+At the same time, each merchant needs an isolated view of their own orders, stock, and net payout after platform commissions — without ever seeing another merchant's pricing or customer data.
+
+## 02 · Constraints
+
+- **Regional payment fragmentation:** No single payment processor covers all regional and international cards cleanly, requiring simultaneous integration with **Stripe**, **PayPal**, and **Moyasar**.
+- **Unreliable mobile networks:** Buyers and medical/general suppliers in Yemen often browse on intermittent connections; duplicate checkout taps and webhook retries are normal, not edge cases.
+- **Single-codebase mobile delivery:** Shipping a responsive Android/iOS experience alongside the web storefront under a lean engineering budget.
+
+## 03 · System Architecture
+
+<ArchDiagram
+  variant="magic-linker"
+  caption="Checkout splits one buyer cart into vendor-scoped sub-orders while an idempotent webhook layer prevents double charges and credits commission ledgers."
+/>
+
+## 04 · Shipped Mobile Interface (Google Play)
+
+Rather than mocking screens, these are production captures from the live React Native application published on Google Play — covering direct merchant-to-buyer negotiation chat, dedicated vendor storefronts, and multi-currency user settings:
+
+<div class="not-prose my-8 grid grid-cols-1 gap-4 sm:grid-cols-3" dir="ltr">
+  <figure class="border border-rule bg-paper-alt p-2.5">
+    <img src={withBase('/images/projects/magiclink-app-2.webp')} alt="Magic Linker real-time merchant chat screen" width="330" height="592" loading="lazy" decoding="async" class="w-full h-auto border border-rule" />
+    <figcaption class="mt-2 font-mono text-[11px] text-ink-muted">01 · Direct merchant messaging</figcaption>
+  </figure>
+  <figure class="border border-rule bg-paper-alt p-2.5">
+    <img src={withBase('/images/projects/magiclink-app-3.webp')} alt="Magic Linker dedicated vendor profile and catalog screen" width="330" height="592" loading="lazy" decoding="async" class="w-full h-auto border border-rule" />
+    <figcaption class="mt-2 font-mono text-[11px] text-ink-muted">02 · Vendor storefront &amp; catalog</figcaption>
+  </figure>
+  <figure class="border border-rule bg-paper-alt p-2.5">
+    <img src={withBase('/images/projects/magiclink-app-1.webp')} alt="Magic Linker account and USD currency preference screen" width="330" height="592" loading="lazy" decoding="async" class="w-full h-auto border border-rule" />
+    <figcaption class="mt-2 font-mono text-[11px] text-ink-muted">03 · Multi-currency preferences</figcaption>
+  </figure>
+</div>
+
+## 05 · Key Engineering Decisions & Trade-offs
+
+| Decision | Alternatives Considered | Why This Won |
+|---|---|---|
+| **Parent Order + Vendor Sub-Order Split Schema** | Flat `order_items` table with `vendor_id` only | A flat table breaks down when Vendor A ships on time while Vendor B cancels an item and triggers a partial refund. Separating `orders` (payment envelope) from `sub_orders` (fulfillment + settlement unit) keeps partial refunds and vendor statuses clean. |
+| **Payment Gateway Strategy Adapter** | Direct SDK calls inside checkout controllers | Stripe, PayPal, and Moyasar have different currency precision rules, callback flows, and webhook signature formats. Isolating them behind a single `PaymentGatewayContract` kept checkout logic gateway-agnostic and testable. |
+| **Immutable Ledger Entries for Commissions** | Storing a mutable `vendor.balance` integer column | Updating a balance column directly leaves no audit trail when a dispute happens. Recording append-only `ledger_entries` (credit, commission fee, payout) guarantees every cent reconciles. |
+
+## 06 · Idempotent Payment Webhook Guard (Excerpt)
+
+Payment gateways retry webhooks aggressively when networks hiccup. Every webhook event is verified and processed inside a single atomic guard keyed by `(gateway, external_event_id)`:
+
+```php
+declare(strict_types=1);
+
+final class ProcessPaymentWebhookAction
+{
+    public function handle(string $gateway, string $eventId, string $orderRef, int $paidMinor): void
+    {
+        DB::transaction(function () use ($gateway, $eventId, $orderRef, $paidMinor): void {
+            // Unique index on (gateway, external_event_id) makes duplicate retries harmless
+            $alreadyProcessed = WebhookEvent::query()
+                ->where('gateway', $gateway)
+                ->where('external_event_id', $eventId)
+                ->lockForUpdate()
+                ->exists();
+
+            if ($alreadyProcessed) {
+                return;
+            }
+
+            WebhookEvent::create([
+                'gateway' => $gateway,
+                'external_event_id' => $eventId,
+                'processed_at' => now(),
+            ]);
+
+            $order = Order::where('reference', $orderRef)->lockForUpdate()->firstOrFail();
+
+            if ($order->status === OrderStatus::Paid || $order->total_minor !== $paidMinor) {
+                throw new PaymentMismatchException("Order {$orderRef} failed integrity check.");
+            }
+
+            $order->markPaid();
+            SettleVendorCommissionsJob::dispatch($order->id)->afterCommit();
+        });
+    }
+}
+```
+
+## 07 · Outcome
+
+- Shipped **both web storefront** ([magiclinker.com](https://magiclinker.com/)) and **Android mobile app** on [Google Play](https://play.google.com/store/apps/details?id=com.magiclink.medstore).
+- Unified multi-vendor checkout across **Stripe, PayPal, and Moyasar** with automated commission settlement and zero cross-vendor data leakage.
+- Enabled independent supplier onboarding, real-time buyer-merchant messaging, and multi-governorate order workflows.
+
+## 08 · What I'd Do Differently Next Time
+
+> Early in the rollout, currency conversion rates were fetched on demand during checkout, which introduced occasional latency spikes on slower links. Moving FX rates to a scheduled Redis snapshot updated every 15 minutes — stamped immutably onto each `order` record at creation time — eliminates external network dependencies from the critical checkout path.

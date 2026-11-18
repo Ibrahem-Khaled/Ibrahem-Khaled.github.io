@@ -1,0 +1,50 @@
+---
+import { getCollection, render } from 'astro:content'
+import CaseStudy from '../../../layouts/CaseStudy.astro'
+
+export async function getStaticPaths() {
+  const entries = (await getCollection('work'))
+    .filter((e) => e.data.lang === 'ar')
+    .sort((a, b) => a.data.order - b.data.order)
+
+  return entries.map((entry, idx) => {
+    const next = entries[(idx + 1) % entries.length]
+    return {
+      params: { slug: entry.data.routeSlug },
+      props: {
+        entry,
+        nextStudy:
+          next && next.data.routeSlug !== entry.data.routeSlug
+            ? { slug: next.data.routeSlug, title: next.data.title, domain: next.data.domain }
+            : undefined,
+      },
+    }
+  })
+}
+
+const { entry, nextStudy } = Astro.props
+const { Content } = await render(entry)
+const d = entry.data
+---
+
+<CaseStudy
+  lang="ar"
+  title={d.title}
+  summary={d.summary}
+  year={d.year}
+  status={d.status}
+  role={d.role}
+  domain={d.domain}
+  stack={d.stack}
+  nda={d.nda}
+  headlineMetric={d.headlineMetric}
+  liveUrl={d.liveUrl}
+  playStoreUrl={d.playStoreUrl}
+  repoUrl={d.repoUrl}
+  coverImage={d.coverImage}
+  diagramVariant={d.diagramVariant}
+  team={d.team}
+  nextStudy={nextStudy}
+>
+  <Content />
+</CaseStudy>

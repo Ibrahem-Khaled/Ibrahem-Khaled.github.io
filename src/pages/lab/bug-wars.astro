@@ -1,0 +1,15 @@
+---
+import Base from '../../layouts/Base.astro'
+import BugWarsIsland from '../../islands/BugWarsIsland'
+import { PROFILE } from '../../data/profile'
+import { withBase } from '../../utils/paths'
+---
+
+<Base
+  lang="en"
+  hideChrome={true}
+  title={`BUG WARS 3D FPS — Lab · ${PROFILE.name.en}`}
+  description="Interactive 3D first-person shooter built with Three.js, React Three Fiber, and procedural Web Audio."
+>
+  <BugWarsIsland client:only="react" lang="en" backHref={withBase('/lab/')} />
+</Base>

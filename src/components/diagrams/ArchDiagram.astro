@@ -1,0 +1,253 @@
+---
+interface Props {
+  variant: 'hawyati' | 'magic-linker' | 'abdulaziz-learn' | 'multi-tenant-saas'
+  caption?: string
+}
+
+const { variant, caption } = Astro.props
+---
+
+<figure class="my-8 max-w-full overflow-hidden border border-rule bg-paper-alt p-4 sm:p-6" dir="ltr">
+  <div class="mb-3 flex items-center justify-between border-b border-rule pb-2.5 font-mono text-[11px] uppercase tracking-wider text-ink-muted">
+    <span>Architecture Diagram</span>
+    <span>{variant}</span>
+  </div>
+
+  <div class="max-w-full overflow-x-auto">
+    {variant === 'hawyati' && (
+      <svg viewBox="0 0 860 315" class="w-full min-w-[600px] h-auto" role="img" aria-label="Hawyati Dry-Port and 3D Yard Digital Twin architecture diagram">
+        <defs>
+          <marker id="arr-h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#121211" />
+          </marker>
+          <marker id="arr-h-acc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#C8430A" />
+          </marker>
+        </defs>
+        <g font-family="IBM Plex Mono, monospace" fill="#121211">
+          <!-- Gate & Yard Inputs -->
+          <rect x="16" y="32" width="192" height="62" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.4" />
+          <text x="112" y="56" text-anchor="middle" font-size="11" font-weight="600">Gate &amp; Inspection</text>
+          <text x="112" y="75" text-anchor="middle" font-size="9" fill="#5C5953">ISO IDs · Reefer Temp °C</text>
+
+          <rect x="16" y="126" width="192" height="62" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.4" />
+          <text x="112" y="150" text-anchor="middle" font-size="11" font-weight="600">RTG Crane &amp; Ops</text>
+          <text x="112" y="169" text-anchor="middle" font-size="9" fill="#5C5953">Bay / Row / Tier Moves</text>
+
+          <rect x="16" y="220" width="192" height="62" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.4" />
+          <text x="112" y="244" text-anchor="middle" font-size="11" font-weight="600">Client Portal</text>
+          <text x="112" y="263" text-anchor="middle" font-size="9" fill="#5C5953">Booking · Release Orders</text>
+
+          <!-- Core API -->
+          <rect x="266" y="68" width="256" height="170" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.6" />
+          <rect x="266" y="68" width="256" height="28" fill="#121211" />
+          <text x="394" y="86" text-anchor="middle" font-size="10.5" fill="#F6F4EF" font-weight="600">Laravel Yard Engine</text>
+          <text x="282" y="118" font-size="9.5">• 3D Slot Allocation (Bay/Row/Tier)</text>
+          <text x="282" y="140" font-size="9.5">• Container State Machine</text>
+          <text x="282" y="162" font-size="9.5">• Reefer Telemetry &amp; Repair Queue</text>
+          <text x="282" y="184" font-size="9.5">• Storage Tariff &amp; Billing Ledger</text>
+          <text x="282" y="216" font-size="9.5" fill="#C8430A">DB::transaction() + Slot Locks</text>
+
+          <!-- Storage & Realtime -->
+          <rect x="580" y="32" width="262" height="94" rx="3" fill="#F9EAE3" stroke="#C8430A" stroke-width="1.5" />
+          <text x="711" y="57" text-anchor="middle" font-size="11" font-weight="600" fill="#A13306">HAWYATI-YARD-TWIN (WebGL)</text>
+          <text x="711" y="78" text-anchor="middle" font-size="9" fill="#3D3B37">Instanced Three.js Container Grid</text>
+          <text x="711" y="96" text-anchor="middle" font-size="9" fill="#3D3B37">12,000+ TEU · 60fps · Live Ticker</text>
+          <text x="711" y="113" text-anchor="middle" font-size="9" fill="#A13306">WebSocket Delta Broadcasts</text>
+
+          <rect x="580" y="154" width="262" height="56" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.4" />
+          <text x="711" y="177" text-anchor="middle" font-size="10.5" font-weight="600">MySQL Yard Ledger</text>
+          <text x="711" y="196" text-anchor="middle" font-size="9" fill="#5C5953">Composite (yard_id, bay, row, tier)</text>
+
+          <rect x="580" y="232" width="262" height="50" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.4" stroke-dasharray="4 3" />
+          <text x="711" y="253" text-anchor="middle" font-size="10.5" font-weight="600">Redis Event Stream</text>
+          <text x="711" y="270" text-anchor="middle" font-size="9" fill="#5C5953">Live Ops Feed &amp; Pub/Sub</text>
+
+          <!-- Connectors -->
+          <path d="M 208 63 L 264 112" fill="none" stroke="#121211" stroke-width="1.3" marker-end="url(#arr-h)" />
+          <path d="M 208 157 L 264 157" fill="none" stroke="#121211" stroke-width="1.3" marker-end="url(#arr-h)" />
+          <path d="M 208 251 L 264 202" fill="none" stroke="#121211" stroke-width="1.3" marker-end="url(#arr-h)" />
+          <path d="M 522 112 L 578 82" fill="none" stroke="#C8430A" stroke-width="1.5" marker-end="url(#arr-h-acc)" />
+          <path d="M 522 166 L 578 182" fill="none" stroke="#121211" stroke-width="1.3" marker-end="url(#arr-h)" />
+          <path d="M 522 208 L 578 254" fill="none" stroke="#121211" stroke-width="1.3" marker-end="url(#arr-h)" />
+        </g>
+      </svg>
+    )}
+
+    {variant === 'magic-linker' && (
+      <svg viewBox="0 0 820 310" class="w-full min-w-[620px] h-auto" role="img" aria-label="Magic Linker multi-vendor marketplace and multi-currency payment architecture">
+        <defs>
+          <marker id="arr-m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#121211" />
+          </marker>
+          <marker id="arr-m-acc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#C8430A" />
+          </marker>
+        </defs>
+        <g font-family="IBM Plex Mono, monospace" fill="#121211">
+          <!-- Clients -->
+          <rect x="20" y="45" width="160" height="62" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.4" />
+          <text x="100" y="70" text-anchor="middle" font-size="11" font-weight="600">Web Storefront</text>
+          <text x="100" y="89" text-anchor="middle" font-size="9.5" fill="#5C5953">magiclinker.com (B2B/B2C)</text>
+
+          <rect x="20" y="132" width="160" height="62" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.4" />
+          <text x="100" y="157" text-anchor="middle" font-size="11" font-weight="600">Mobile App</text>
+          <text x="100" y="176" text-anchor="middle" font-size="9.5" fill="#5C5953">React Native · Play Store</text>
+
+          <rect x="20" y="218" width="160" height="62" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.4" />
+          <text x="100" y="243" text-anchor="middle" font-size="11" font-weight="600">Vendor Dashboard</text>
+          <text x="100" y="262" text-anchor="middle" font-size="9.5" fill="#5C5953">Inventory · Quotes · Payouts</text>
+
+          <!-- Commerce Core -->
+          <rect x="245" y="45" width="235" height="235" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.6" />
+          <rect x="245" y="45" width="235" height="28" fill="#121211" />
+          <text x="362" y="63" text-anchor="middle" font-size="10.5" fill="#F6F4EF" font-weight="600">Laravel Multi-Vendor Core</text>
+          <text x="260" y="96" font-size="10">1. Unified Cart → Sub-Order Split</text>
+          <text x="260" y="118" font-size="10">2. Stock Reservation (lockForUpdate)</text>
+          <text x="260" y="140" font-size="10">3. Payment Strategy Router</text>
+          <text x="260" y="162" font-size="10">4. Idempotent Webhook Verifier</text>
+          <text x="260" y="184" font-size="10">5. Vendor Commission Ledger</text>
+          <rect x="260" y="206" width="205" height="56" rx="2" fill="#F9EAE3" stroke="#C8430A" stroke-width="1.1" />
+          <text x="362" y="228" text-anchor="middle" font-size="9.5" font-weight="600" fill="#A13306">Zero Double-Charge Guard</text>
+          <text x="362" y="247" text-anchor="middle" font-size="9" fill="#3D3B37">Unique idempotency_key + DB tx</text>
+
+          <!-- Gateways -->
+          <rect x="550" y="45" width="245" height="62" rx="3" fill="#F6F4EF" stroke="#C8430A" stroke-width="1.4" />
+          <text x="672" y="70" text-anchor="middle" font-size="11" font-weight="600" fill="#A13306">Stripe · PayPal · Moyasar</text>
+          <text x="672" y="89" text-anchor="middle" font-size="9.5" fill="#5C5953">Multi-Currency Gateway Adapter</text>
+
+          <rect x="550" y="132" width="245" height="62" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.4" />
+          <text x="672" y="157" text-anchor="middle" font-size="11" font-weight="600">Settlement Queue</text>
+          <text x="672" y="176" text-anchor="middle" font-size="9.5" fill="#5C5953">Automated Commission Splits</text>
+
+          <rect x="550" y="218" width="245" height="62" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.4" />
+          <text x="672" y="243" text-anchor="middle" font-size="11" font-weight="600">Relational Schema (MySQL)</text>
+          <text x="672" y="262" text-anchor="middle" font-size="9.5" fill="#5C5953">orders → sub_orders → ledger_entries</text>
+
+          <path d="M 180 76 L 243 100" fill="none" stroke="#121211" stroke-width="1.3" marker-end="url(#arr-m)" />
+          <path d="M 180 163 L 243 163" fill="none" stroke="#121211" stroke-width="1.3" marker-end="url(#arr-m)" />
+          <path d="M 180 249 L 243 224" fill="none" stroke="#121211" stroke-width="1.3" marker-end="url(#arr-m)" />
+          <path d="M 480 100 L 548 76" fill="none" stroke="#C8430A" stroke-width="1.5" marker-end="url(#arr-m-acc)" />
+          <path d="M 548 89 L 480 148" fill="none" stroke="#C8430A" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arr-m-acc)" />
+          <path d="M 480 163 L 548 163" fill="none" stroke="#121211" stroke-width="1.3" marker-end="url(#arr-m)" />
+          <path d="M 480 232 L 548 248" fill="none" stroke="#121211" stroke-width="1.3" marker-end="url(#arr-m)" />
+        </g>
+      </svg>
+    )}
+
+    {variant === 'abdulaziz-learn' && (
+      <svg viewBox="0 0 820 310" class="w-full min-w-[620px] h-auto" role="img" aria-label="Abdulaziz Learn migration from commercial LLM APIs to self-hosted Qwen">
+        <defs>
+          <marker id="arr-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#121211" />
+          </marker>
+          <marker id="arr-a-acc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#C8430A" />
+          </marker>
+        </defs>
+        <g font-family="IBM Plex Mono, monospace" fill="#121211">
+          <!-- Legacy Path -->
+          <rect x="20" y="24" width="775" height="72" rx="3" fill="#F6F4EF" stroke="#DAD5C9" stroke-width="1.3" stroke-dasharray="5 4" />
+          <text x="36" y="47" font-size="10" font-weight="600" fill="#5C5953">BEFORE (Commercial API Bottleneck)</text>
+          <text x="36" y="72" font-size="10" fill="#5C5953">Student Prompt → Laravel → Commercial LLM API (per-token cost spike + high Arabic latency) → TTS / Slide Render</text>
+
+          <!-- New Self-Hosted Pipeline -->
+          <text x="20" y="128" font-size="10.5" font-weight="600" fill="#C8430A">AFTER (Self-Hosted Fine-Tuned Qwen Pipeline)</text>
+
+          <rect x="20" y="144" width="148" height="78" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.4" />
+          <text x="94" y="172" text-anchor="middle" font-size="11" font-weight="600">Learner Client</text>
+          <text x="94" y="191" text-anchor="middle" font-size="9.5" fill="#5C5953">Interactive Lesson</text>
+          <text x="94" y="207" text-anchor="middle" font-size="9.5" fill="#5C5953">Audio + Visual Sync</text>
+
+          <rect x="206" y="144" width="166" height="78" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.4" />
+          <text x="289" y="170" text-anchor="middle" font-size="11" font-weight="600">Orchestrator API</text>
+          <text x="289" y="189" text-anchor="middle" font-size="9.5" fill="#5C5953">Semantic Cache (Redis)</text>
+          <text x="289" y="205" text-anchor="middle" font-size="9.5" fill="#5C5953">Prompt Guard &amp; Routing</text>
+
+          <rect x="410" y="144" width="192" height="78" rx="3" fill="#F9EAE3" stroke="#C8430A" stroke-width="1.6" />
+          <text x="506" y="170" text-anchor="middle" font-size="11" font-weight="600" fill="#A13306">Self-Hosted Qwen LLM</text>
+          <text x="506" y="189" text-anchor="middle" font-size="9.5" fill="#3D3B37">Fine-Tuned Arabic EdTech</text>
+          <text x="506" y="205" text-anchor="middle" font-size="9.5" fill="#A13306">Streaming OpenAI-Compat API</text>
+
+          <rect x="640" y="144" width="155" height="78" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.4" />
+          <text x="717" y="170" text-anchor="middle" font-size="11" font-weight="600">A/V Sync Engine</text>
+          <text x="717" y="189" text-anchor="middle" font-size="9.5" fill="#5C5953">Chunked Audio +</text>
+          <text x="717" y="205" text-anchor="middle" font-size="9.5" fill="#5C5953">Visual Step Markers</text>
+
+          <!-- Fallback strip -->
+          <rect x="130" y="248" width="560" height="44" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.2" stroke-dasharray="4 3" />
+          <text x="410" y="274" text-anchor="middle" font-size="9.5" fill="#5C5953">Circuit Breaker: GPU saturation / timeout → Graceful Commercial Fallback</text>
+
+          <path d="M 168 183 L 204 183" fill="none" stroke="#121211" stroke-width="1.4" marker-end="url(#arr-a)" />
+          <path d="M 372 183 L 408 183" fill="none" stroke="#C8430A" stroke-width="1.6" marker-end="url(#arr-a-acc)" />
+          <path d="M 602 183 L 638 183" fill="none" stroke="#121211" stroke-width="1.4" marker-end="url(#arr-a)" />
+          <path d="M 289 222 L 289 246" fill="none" stroke="#5C5953" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#arr-a)" />
+        </g>
+      </svg>
+    )}
+
+    {variant === 'multi-tenant-saas' && (
+      <svg viewBox="0 0 820 315" class="w-full min-w-[620px] h-auto" role="img" aria-label="Multi-Tenant Laravel Stancl Tenancy database isolation architecture">
+        <defs>
+          <marker id="arr-t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#121211" />
+          </marker>
+          <marker id="arr-t-acc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#C8430A" />
+          </marker>
+        </defs>
+        <g font-family="IBM Plex Mono, monospace" fill="#121211">
+          <!-- Incoming subdomains -->
+          <rect x="20" y="34" width="180" height="46" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.3" />
+          <text x="110" y="61" text-anchor="middle" font-size="10">station-a.platform.io</text>
+
+          <rect x="20" y="102" width="180" height="46" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.3" />
+          <text x="110" y="129" text-anchor="middle" font-size="10">vendor-b.platform.io</text>
+
+          <rect x="20" y="170" width="180" height="46" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.3" />
+          <text x="110" y="197" text-anchor="middle" font-size="10">admin.platform.io</text>
+
+          <!-- Edge & Tenancy Kernel -->
+          <rect x="255" y="42" width="230" height="174" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.6" />
+          <rect x="255" y="42" width="230" height="28" fill="#121211" />
+          <text x="370" y="60" text-anchor="middle" font-size="10.5" fill="#F6F4EF" font-weight="600">Stancl/Tenancy Bootstrapper</text>
+          <text x="270" y="92" font-size="10">1. Wildcard TLS + Host Resolver</text>
+          <text x="270" y="114" font-size="10">2. Central Domain Lookup (Cached)</text>
+          <text x="270" y="136" font-size="10">3. Switch DB Connection Pool</text>
+          <text x="270" y="158" font-size="10">4. Prefix Redis, Storage &amp; Queues</text>
+          <text x="270" y="188" font-size="9.5" fill="#C8430A">Zero shared tenant rows</text>
+
+          <!-- Isolated Tenant DBs -->
+          <rect x="550" y="24" width="245" height="64" rx="3" fill="#F9EAE3" stroke="#C8430A" stroke-width="1.4" />
+          <text x="672" y="49" text-anchor="middle" font-size="10.5" font-weight="600" fill="#A13306">tenant_station_a DB</text>
+          <text x="672" y="69" text-anchor="middle" font-size="9.5" fill="#3D3B37">Pumps · Shifts · Fleet Billing</text>
+
+          <rect x="550" y="106" width="245" height="64" rx="3" fill="#F9EAE3" stroke="#C8430A" stroke-width="1.4" />
+          <text x="672" y="131" text-anchor="middle" font-size="10.5" font-weight="600" fill="#A13306">tenant_vendor_b DB</text>
+          <text x="672" y="151" text-anchor="middle" font-size="9.5" fill="#3D3B37">Storefront · CRM · Rentals</text>
+
+          <rect x="550" y="188" width="245" height="58" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.4" />
+          <text x="672" y="212" text-anchor="middle" font-size="10.5" font-weight="600">central_control_plane DB</text>
+          <text x="672" y="231" text-anchor="middle" font-size="9.5" fill="#5C5953">Tenants · Domains · Plans</text>
+
+          <!-- Queue Note -->
+          <rect x="165" y="248" width="630" height="46" rx="3" fill="#F6F4EF" stroke="#121211" stroke-width="1.2" stroke-dasharray="4 3" />
+          <text x="480" y="275" text-anchor="middle" font-size="9.2" fill="#5C5953">Tenant-Aware Queue Workers: Every async job serializes tenant_id and re-hydrates isolated DB context</text>
+
+          <path d="M 200 57 L 253 90" fill="none" stroke="#121211" stroke-width="1.3" marker-end="url(#arr-t)" />
+          <path d="M 200 125 L 253 125" fill="none" stroke="#121211" stroke-width="1.3" marker-end="url(#arr-t)" />
+          <path d="M 200 193 L 253 165" fill="none" stroke="#121211" stroke-width="1.3" marker-end="url(#arr-t)" />
+          <path d="M 485 95 L 548 56" fill="none" stroke="#C8430A" stroke-width="1.5" marker-end="url(#arr-t-acc)" />
+          <path d="M 485 135 L 548 138" fill="none" stroke="#C8430A" stroke-width="1.5" marker-end="url(#arr-t-acc)" />
+          <path d="M 485 180 L 548 214" fill="none" stroke="#121211" stroke-width="1.3" marker-end="url(#arr-t)" />
+        </g>
+      </svg>
+    )}
+  </div>
+
+  {caption && (
+    <figcaption class="mt-3 border-t border-rule pt-2.5 font-mono text-xs text-ink-muted">
+      {caption}
+    </figcaption>
+  )}
+</figure>

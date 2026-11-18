@@ -1,0 +1,72 @@
+---
+import Base from '../../layouts/Base.astro'
+import { PROFILE } from '../../data/profile'
+import { withBase } from '../../utils/paths'
+---
+
+<Base
+  lang="en"
+  title={`Engineering Lab — ${PROFILE.name.en}`}
+  description="Interactive WebGL, Three.js, and procedural audio experiments built as isolated client islands."
+>
+  <section class="container-swiss pt-12 pb-16 md:pt-16">
+    <div class="border-b border-ink pb-6">
+      <p class="meta-label">Engineering Lab · Side Experiments</p>
+      <h1 class="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-5xl">
+        Interactive Experiments
+      </h1>
+      <p class="mt-4 max-w-2xl text-base text-ink-soft">
+        Small technical playgrounds isolated from the main portfolio bundle so zero WebGL or game runtime code ever slows down case study pages.
+      </p>
+    </div>
+
+    <div class="mt-10 grid gap-6 md:grid-cols-2">
+      <article class="flex flex-col justify-between border border-ink bg-paper-alt/60 p-6">
+        <div>
+          <div class="flex items-center justify-between font-mono text-xs text-ink-muted">
+            <span>01 · Three.js / React Three Fiber</span>
+            <span class="chip chip-accent">WebGL · Zero Audio Assets</span>
+          </div>
+          <h2 class="mt-3 text-2xl font-semibold text-ink">BUG WARS — 3D FPS</h2>
+          <p class="mt-3 text-sm leading-relaxed text-ink-soft">
+            A browser-based 3D first-person shooter where you defend a mainframe against SyntaxErrors, Memory Leaks, and the LEGACY_CODE boss. Built with React Three Fiber, Zustand state management, and 100% procedural Web Audio synthesis (zero external sound files).
+          </p>
+          <div class="mt-4 flex flex-wrap gap-1.5">
+            <span class="chip">Three.js</span>
+            <span class="chip">@react-three/fiber</span>
+            <span class="chip">Zustand</span>
+            <span class="chip">Web Audio API</span>
+          </div>
+        </div>
+        <div class="mt-6 border-t border-rule pt-4">
+          <a href={withBase('/lab/bug-wars/')} class="btn-primary">
+            Launch 3D Arena →
+          </a>
+        </div>
+      </article>
+
+      <article class="flex flex-col justify-between border border-rule bg-paper-alt/40 p-6">
+        <div>
+          <div class="flex items-center justify-between font-mono text-xs text-ink-muted">
+            <span>02 · Minimax / React Island</span>
+            <span class="chip">Interactive</span>
+          </div>
+          <h2 class="mt-3 text-2xl font-semibold text-ink">Tic-Tac-Toe Duel</h2>
+          <p class="mt-3 text-sm leading-relaxed text-ink-soft">
+            A minimal, keyboard-accessible React island demonstrating isolated client hydration inside a static Astro page.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-1.5">
+            <span class="chip">React 19</span>
+            <span class="chip">Astro Island</span>
+            <span class="chip">TypeScript</span>
+          </div>
+        </div>
+        <div class="mt-6 border-t border-rule pt-4">
+          <a href={withBase('/lab/tic-tac-toe/')} class="btn-secondary">
+            Open Game →
+          </a>
+        </div>
+      </article>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro'
+import HomeView from '../components/HomeView.astro'
+import { PROFILE } from '../data/profile'
+---
+
+<Base
+  lang="en"
+  title={`${PROFILE.name.en} — ${PROFILE.role.en}`}
+  description={PROFILE.positioning.en}
+>
+  <HomeView lang="en" />
+</Base>

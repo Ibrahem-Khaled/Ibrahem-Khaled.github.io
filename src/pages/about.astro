@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro'
+import AboutView from '../components/AboutView.astro'
+import { PROFILE } from '../data/profile'
+---
+
+<Base
+  lang="en"
+  title={`About & Experience — ${PROFILE.name.en}`}
+  description="5 years of full-stack software engineering across multi-tenant SaaS, React Native mobile apps, payments, and self-hosted AI."
+>
+  <AboutView lang="en" />
+</Base>

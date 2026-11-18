@@ -1,0 +1,225 @@
+---
+import Base from './Base.astro'
+import DeviceFrame from '../components/DeviceFrame.astro'
+import ArchDiagram from '../components/diagrams/ArchDiagram.astro'
+import { PROFILE } from '../data/profile'
+import { withBase, type Locale } from '../utils/paths'
+
+interface Props {
+  lang: Locale
+  title: string
+  summary: string
+  year: string
+  status: 'shipped' | 'in-progress'
+  role: string
+  domain: string
+  stack: string[]
+  nda: boolean
+  headlineMetric: { value: string; label: string }
+  liveUrl?: string
+  playStoreUrl?: string
+  repoUrl?: string
+  coverImage?: { src: string; alt: string; width: number; height: number; urlLabel?: string }
+  diagramVariant?: 'hawyati' | 'magic-linker' | 'abdulaziz-learn' | 'multi-tenant-saas'
+  team?: { name: string; role: string }[]
+  nextStudy?: { slug: string; title: string; domain: string }
+}
+
+const {
+  lang,
+  title,
+  summary,
+  year,
+  status,
+  role,
+  domain,
+  stack,
+  nda,
+  headlineMetric,
+  liveUrl,
+  playStoreUrl,
+  repoUrl,
+  coverImage,
+  diagramVariant,
+  team,
+  nextStudy,
+} = Astro.props
+
+const prefix = lang === 'ar' ? '/ar' : ''
+---
+
+<Base
+  title={`${title} — ${PROFILE.name[lang]}`}
+  description={summary}
+  lang={lang}
+  type="article"
+  ogImage={coverImage?.src || '/og-cover.png'}
+>
+  <article class="container-swiss pt-10 pb-8 md:pt-16">
+    <!-- Back link -->
+    <div class="mb-8 flex items-center justify-between gap-4 border-b border-rule pb-4">
+      <a
+        href={withBase(`${prefix}/work/`)}
+        class="font-mono text-xs text-ink-muted transition-colors hover:text-accent"
+      >
+        {lang === 'en' ? '← Back to Work' : 'العودة إلى الأعمال →'}
+      </a>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="chip">{domain}</span>
+        {status === 'in-progress' && (
+          <span class="chip chip-accent">
+            {lang === 'en' ? 'Active Build · 2026' : 'قيد التطوير · 2026'}
+          </span>
+        )}
+        {nda && (
+          <span class="chip">
+            {lang === 'en' ? 'NDA · Anonymized Architecture' : 'NDA · تفاصيل العميل محجوبة'}
+          </span>
+        )}
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="grid gap-8 lg:grid-cols-12">
+      <div class="lg:col-span-8">
+        <h1 class="text-3xl font-semibold tracking-tight text-ink sm:text-5xl sm:leading-[1.1]">
+          {title}
+        </h1>
+        <p class="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">
+          {summary}
+        </p>
+
+        {(liveUrl || playStoreUrl || repoUrl) && (
+          <div class="mt-6 flex flex-wrap items-center gap-3">
+            {liveUrl && (
+              <a href={liveUrl} target="_blank" rel="noopener noreferrer" class="btn-primary">
+                {lang === 'en' ? 'Visit Live Product ↗' : 'زيارة المنصة الحية ↗'}
+              </a>
+            )}
+            {playStoreUrl && (
+              <a href={playStoreUrl} target="_blank" rel="noopener noreferrer" class="btn-secondary">
+                {lang === 'en' ? 'Google Play Listing ↗' : 'التطبيق على Google Play ↗'}
+              </a>
+            )}
+            {repoUrl && (
+              <a href={repoUrl} target="_blank" rel="noopener noreferrer" class="btn-secondary">
+                {lang === 'en' ? 'Source Code ↗' : 'الكود على GitHub ↗'}
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+
+      <!-- Headline metric box -->
+      <div class="lg:col-span-4">
+        <div class="h-full border border-ink bg-paper-alt p-6 flex flex-col justify-between">
+          <span class="meta-label">{lang === 'en' ? 'Key Proof / Scale' : 'المؤشر الرئيسي'}</span>
+          <div class="my-4">
+            <p class="tabular-nums text-3xl font-semibold tracking-tight text-accent sm:text-4xl">
+              {headlineMetric.value}
+            </p>
+            <p class="mt-1.5 text-sm text-ink-soft">{headlineMetric.label}</p>
+          </div>
+          <div class="border-t border-rule pt-3 font-mono text-xs text-ink-muted">
+            {year} · {role}
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Primary visual -->
+    <div class="mt-12">
+      {coverImage ? (
+        <DeviceFrame
+          src={coverImage.src}
+          alt={coverImage.alt}
+          width={coverImage.width}
+          height={coverImage.height}
+          urlLabel={coverImage.urlLabel}
+          figureLabel={`FIG 01 — ${title.toUpperCase()}`}
+          loading="eager"
+        />
+      ) : diagramVariant ? (
+        <ArchDiagram
+          variant={diagramVariant}
+          caption={
+            lang === 'en'
+              ? `System architecture overview — ${title} (client identifiers removed for NDA compliance).`
+              : `المخطط المعماري العام — ${title} (تم إخفاء بيانات العميل التزاماً بالسرية).`
+          }
+        />
+      ) : null}
+    </div>
+
+    <!-- Body + Sidebar -->
+    <div class="mt-14 grid gap-12 lg:grid-cols-12">
+      <!-- Metadata sidebar -->
+      <aside class="lg:col-span-4 lg:order-2">
+        <div class="space-y-6 border-t border-ink pt-6 lg:sticky lg:top-24">
+          <div>
+            <p class="meta-label">{lang === 'en' ? 'Ownership' : 'الدور والمسؤولية'}</p>
+            <p class="mt-1 text-sm font-medium text-ink">{role}</p>
+          </div>
+          <div class="border-t border-rule pt-4">
+            <p class="meta-label">{lang === 'en' ? 'Timeline' : 'الفترة الزمنية'}</p>
+            <p class="mt-1 font-mono text-sm text-ink">{year}</p>
+          </div>
+          <div class="border-t border-rule pt-4">
+            <p class="meta-label">{lang === 'en' ? 'Stack' : 'التقنيات المستخدمة'}</p>
+            <div class="mt-2 flex flex-wrap gap-1.5">
+              {stack.map((tech) => (
+                <span class="chip">{tech}</span>
+              ))}
+            </div>
+          </div>
+          {team && team.length > 0 && (
+            <div class="border-t border-rule pt-4">
+              <p class="meta-label">{lang === 'en' ? 'Collaborators' : 'فريق التنفيذ'}</p>
+              <ul class="mt-2 space-y-1.5 text-sm">
+                {team.map((m) => (
+                  <li>
+                    <span class="font-medium text-ink">{m.name}</span>
+                    <span class="text-ink-muted"> — {m.role}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div class="border-t border-rule pt-5">
+            <p class="text-sm text-ink-soft">
+              {lang === 'en'
+                ? 'Building something similar or hiring a senior full-stack architect?'
+                : 'تبني نظاماً مشابهاً أو تبحث عن مهندس أول يقود البناء؟'}
+            </p>
+            <a href={withBase(`${prefix}/hire/`)} class="btn-quiet mt-2">
+              {lang === 'en' ? 'Discuss a project or role →' : 'ناقش مشروعك أو الدور المتاح ←'}
+            </a>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Editorial MDX prose -->
+      <div class="prose-editorial min-w-0 max-w-[74ch] lg:col-span-8 lg:order-1">
+        <slot />
+      </div>
+    </div>
+
+    <!-- Footer navigation to next case study -->
+    {nextStudy && (
+      <div class="mt-20 border-t border-ink pt-8">
+        <p class="meta-label">{lang === 'en' ? 'Next Case Study' : 'دراسة الحالة التالية'}</p>
+        <a
+          href={withBase(`${prefix}/work/${nextStudy.slug}/`)}
+          class="group mt-2 flex items-baseline justify-between gap-4 no-underline"
+        >
+          <span class="text-2xl font-semibold tracking-tight text-ink transition-colors group-hover:text-accent sm:text-3xl">
+            {nextStudy.title}
+          </span>
+          <span class="font-mono text-sm text-ink-muted group-hover:text-accent">
+            {nextStudy.domain} {lang === 'en' ? '→' : '←'}
+          </span>
+        </a>
+      </div>
+    )}
+  </article>
+</Base>

@@ -1,0 +1,172 @@
+---
+import { COLLABORATORS, EDUCATION, EXPERIENCE_TIMELINE, PROFILE } from '../data/profile'
+import { withBase, type Locale } from '../utils/paths'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+const prefix = lang === 'ar' ? '/ar' : ''
+---
+
+<section class="container-swiss pt-12 pb-16 md:pt-16">
+  <!-- Intro + Portrait -->
+  <div class="grid gap-10 border-b border-ink pb-14 lg:grid-cols-12 lg:items-start">
+    <div class="lg:col-span-8">
+      <p class="meta-label">{lang === 'en' ? 'Background · 2021–2026' : 'الخلفية المهنية · 2021–2026'}</p>
+      <h1 class="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-5xl sm:leading-[1.1]">
+        {PROFILE.name[lang]}
+      </h1>
+      <p class="mt-2 font-mono text-sm text-accent">
+        {PROFILE.role[lang]} · {PROFILE.subtitle[lang]}
+      </p>
+
+      <div class="mt-6 space-y-4 max-w-2xl text-base leading-relaxed text-ink-soft">
+        {lang === 'en' ? (
+          <>
+            <p>
+              I am a Senior Full-Stack Software Engineer based in Egypt (UTC+2) with 5 years of continuous production experience shipping web platforms, cross-platform mobile apps, and AI-powered systems for clients and teams across Saudi Arabia, Yemen, Jordan, Iraq, and Egypt.
+            </p>
+            <p>
+              My strongest leverage sits where backend rigor meets real product delivery: designing strict database-isolated multi-tenant SaaS architectures in Laravel, integrating fault-tolerant multi-currency payment pipelines (Stripe, PayPal, Moyasar), shipping React Native apps to Google Play, and migrating expensive commercial LLM workflows to self-hosted open-source models like Qwen.
+            </p>
+          </>
+        ) : (
+          <>
+            <p>
+              أنا مهندس برمجيات أول (Full-Stack) مقيم في مصر (UTC+2) بخبرة إنتاجية متواصلة تمتد لـ 5 سنوات في بناء وإطلاق منصات الويب، تطبيقات الموبايل متعددة المنصات، وأنظمة الذكاء الاصطناعي لعملاء وفرق في السعودية واليمن والأردن والعراق ومصر.
+            </p>
+            <p>
+              نقطة قوتي الأساسية تجمع بين الصرامة المعمارية وتسليم المنتجات الفعلية: تصميم منصات SaaS متعددة المستأجرين بعزل كامل لقواعد البيانات باستخدام Laravel، ربط بوابات دفع متعددة العملات (Stripe وPayPal وميسّر)، إطلاق تطبيقات React Native على Google Play، ونقل محركات الذكاء الاصطناعي من APIs تجارية مكلفة إلى نماذج مفتوحة المصدر مستضافة ذاتياً مثل Qwen.
+            </p>
+          </>
+        )}
+      </div>
+
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href={withBase(PROFILE.cvPath)} download="Ibrahim_Khaled_CV.pdf" class="btn-primary">
+          {lang === 'en' ? 'Download Updated CV (PDF) ↓' : 'تحميل السيرة الذاتية المحدّثة (PDF) ↓'}
+        </a>
+        <a href={withBase(`${prefix}/hire/`)} class="btn-secondary">
+          {lang === 'en' ? 'Work With Me' : 'تعاقد معي'}
+        </a>
+      </div>
+    </div>
+
+    <div class="lg:col-span-4">
+      <figure class="mx-auto max-w-xs border border-ink bg-paper-alt p-2 lg:ms-auto lg:me-0">
+        <img
+          src={withBase('/images/team/ibrahim-khaled.webp')}
+          alt={PROFILE.name[lang]}
+          width={640}
+          height={800}
+          loading="eager"
+          decoding="async"
+          class="block aspect-4/5 w-full object-cover"
+        />
+        <figcaption class="px-1 pt-2 font-mono text-[11px] text-ink-muted">
+          {PROFILE.location[lang]}
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <!-- Experience Timeline (Synced 1:1 with new CV) -->
+  <div class="mt-16">
+    <p class="meta-label">01 / {lang === 'en' ? 'Career Record' : 'السجل المهني'}</p>
+    <h2 class="mt-2 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+      {lang === 'en' ? 'Professional Experience' : 'الخبرة المهنية'}
+    </h2>
+
+    <div class="mt-8 divide-y divide-rule border-t border-ink">
+      {EXPERIENCE_TIMELINE.map((item) => (
+        <div class="grid gap-4 py-8 lg:grid-cols-12">
+          <div class="lg:col-span-3">
+            <p class="font-mono text-xs font-medium text-accent">{item.period[lang]}</p>
+          </div>
+          <div class="lg:col-span-9">
+            <h3 class="text-lg font-semibold text-ink">{item.role[lang]}</h3>
+            <p class="mt-0.5 text-sm text-ink-muted">{item.org[lang]}</p>
+            <ul class="mt-4 space-y-2.5 text-sm leading-relaxed text-ink-soft">
+              {item.bullets.map((b) => (
+                <li class="flex gap-2.5">
+                  <span class="font-mono text-accent">—</span>
+                  <span>{b[lang]}</span>
+                </li>
+              ))}
+            </ul>
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              {item.tags.map((tag) => (
+                <span class="chip">{tag}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Education & Training -->
+  <div class="mt-16 border-t border-rule pt-14">
+    <p class="meta-label">02 / {lang === 'en' ? 'Credentials' : 'التعليم والشهادات'}</p>
+    <h2 class="mt-2 text-2xl font-semibold tracking-tight text-ink">
+      {lang === 'en' ? 'Education & Professional Training' : 'التعليم والتدريب المهني'}
+    </h2>
+    <ul class="mt-6 divide-y divide-rule border-y border-rule">
+      {EDUCATION.map((edu) => (
+        <li class="py-4 text-sm text-ink-soft">{edu[lang]}</li>
+      ))}
+    </ul>
+    <p class="mt-4 font-mono text-xs text-ink-muted">
+      {lang === 'en'
+        ? 'Languages: Arabic (Native) · English (Professional Working Proficiency)'
+        : 'اللغات: العربية (لغة أم) · الإنجليزية (إجادة مهنية للعمل عن بُعد)'}
+    </p>
+  </div>
+
+  <!-- Collaborators (Ibrahim + Ali Salem) -->
+  <div class="mt-16 border-t border-rule pt-14">
+    <p class="meta-label">03 / {lang === 'en' ? 'Design + Engineering Partnership' : 'شراكة التصميم والهندسة'}</p>
+    <h2 class="mt-2 text-2xl font-semibold tracking-tight text-ink">
+      {lang === 'en' ? 'Core Collaborators' : 'فريق التنفيذ والتعاون'}
+    </h2>
+    <p class="mt-2 max-w-2xl text-sm text-ink-muted">
+      {lang === 'en'
+        ? 'When a client needs both dedicated Figma product design and full-stack engineering under one roof, I collaborate directly with Ali Salem.'
+        : 'عندما يحتاج المشروع تصميم تجربة مستخدم كاملة على Figma إلى جانب التطوير البرمجي، أعمل بشراكة مباشرة مع علي سالم.'}
+    </p>
+
+    <div class="mt-8 grid gap-6 md:grid-cols-2">
+      {COLLABORATORS.map((person) => (
+        <article class="grid gap-5 border border-ink bg-paper-alt/50 p-5 sm:grid-cols-12 sm:items-start">
+          <div class="sm:col-span-4">
+            <img
+              src={withBase(person.photo)}
+              alt={person.name[lang]}
+              width={640}
+              height={800}
+              loading="eager"
+              decoding="sync"
+              class="block aspect-4/5 w-full border border-rule object-cover"
+            />
+          </div>
+          <div class="sm:col-span-8">
+            <h3 class="text-lg font-semibold text-ink">{person.name[lang]}</h3>
+            <p class="mt-0.5 font-mono text-xs text-accent">{person.role[lang]}</p>
+            <p class="mt-3 text-sm leading-relaxed text-ink-soft">{person.bio[lang]}</p>
+            {person.links.length > 0 && (
+              <div class="mt-4 flex flex-wrap gap-4 font-mono text-xs">
+                {person.links.map((l) => (
+                  <a href={l.href} target="_blank" rel="noopener noreferrer" class="underline hover:text-accent">
+                    {l.label} ↗
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

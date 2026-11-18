@@ -1,0 +1,196 @@
+---
+import { getCollection } from 'astro:content'
+import { WORK_INDEX, type WorkFilterKey } from '../data/profile'
+import { withBase, type Locale } from '../utils/paths'
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+const prefix = lang === 'ar' ? '/ar' : ''
+const arrow = lang === 'en' ? '→' : '←'
+
+const allWork = await getCollection('work')
+const enStudies = allWork
+  .filter((e) => e.data.lang === 'en')
+  .sort((a, b) => a.data.order - b.data.order)
+const arBySlug = new Map(
+  allWork.filter((e) => e.data.lang === 'ar').map((e) => [e.data.routeSlug, e]),
+)
+
+const studies = enStudies.map((enEntry) => {
+  if (lang === 'ar') {
+    const arMatch = arBySlug.get(enEntry.data.routeSlug)
+    if (arMatch) return { entry: arMatch, href: `${prefix}/work/${arMatch.data.routeSlug}/`, isArabic: true }
+    return { entry: enEntry, href: `/work/${enEntry.data.routeSlug}/`, isArabic: false }
+  }
+  return { entry: enEntry, href: `/work/${enEntry.data.routeSlug}/`, isArabic: false }
+})
+
+const filters: { key: WorkFilterKey; label: { en: string; ar: string } }[] = [
+  { key: 'all', label: { en: 'All (15)', ar: 'الكل (15)' } },
+  { key: 'saas', label: { en: 'SaaS & LMS', ar: 'SaaS وتعليم' } },
+  { key: 'ai', label: { en: 'AI & LLM', ar: 'ذكاء اصطناعي' } },
+  { key: 'commerce', label: { en: 'Commerce & Logistics', ar: 'تجارة ولوجستيات' } },
+  { key: 'mobile', label: { en: 'Mobile Apps', ar: 'تطبيقات موبايل' } },
+]
+---
+
+<section class="container-swiss pt-12 pb-16 md:pt-16">
+  <div class="border-b border-ink pb-6">
+    <p class="meta-label">{lang === 'en' ? 'Work Archive · 2021–2026' : 'أرشيف الأعمال · 2021–2026'}</p>
+    <h1 class="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-5xl">
+      {lang === 'en' ? 'Case Studies & Shipped Systems' : 'دراسات الحالة والأنظمة المُنفّذة'}
+    </h1>
+    <p class="mt-4 max-w-2xl text-base text-ink-soft">
+      {lang === 'en'
+        ? 'Deep architectural write-ups for flagship systems, followed by the full searchable record of production web platforms, Google Play apps, and NDA enterprise builds.'
+        : 'دراسات هندسية مفصّلة لأهم الأنظمة، يليها السجل الكامل لمنصات الويب وتطبيقات Google Play وأنظمة الشركات.'}
+    </p>
+  </div>
+
+  <!-- Case study cards -->
+  <div class="mt-10 grid gap-6 md:grid-cols-2">
+    {studies.map(({ entry, href, isArabic }, i) => {
+      const d = entry.data
+      return (
+        <article class="flex flex-col justify-between border border-ink bg-paper-alt/50 p-6">
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-xs text-ink-muted">
+              <span>{String(i + 1).padStart(2, '0')} · {d.year} · {d.domain}</span>
+              <div class="flex gap-1.5">
+                {d.status === 'in-progress' && <span class="chip chip-accent">{lang === 'en' ? 'Active' : 'جاري'}</span>}
+                {d.nda && <span class="chip">NDA</span>}
+              </div>
+            </div>
+            <h2 class="mt-3 text-xl font-semibold tracking-tight text-ink">
+              <a href={withBase(href)} class="hover:text-accent">{d.title}</a>
+            </h2>
+            <p class="mt-2.5 text-sm leading-relaxed text-ink-soft">{d.summary}</p>
+            <p class="mt-4 border-s-2 border-accent ps-3 font-mono text-xs text-ink">
+              <strong>{d.headlineMetric.value}</strong> — {d.headlineMetric.label}
+            </p>
+          </div>
+          <div class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-rule pt-4">
+            <a href={withBase(href)} class="btn-quiet">
+              {lang === 'en' ? 'Read Case Study' : isArabic ? 'قراءة الدراسة' : 'قراءة الدراسة (EN)'} {arrow}
+            </a>
+            <div class="flex gap-3 font-mono text-xs">
+              {d.liveUrl && <a href={d.liveUrl} target="_blank" rel="noopener noreferrer" class="underline hover:text-accent">Live ↗</a>}
+              {d.playStoreUrl && <a href={d.playStoreUrl} target="_blank" rel="noopener noreferrer" class="underline hover:text-accent">Play ↗</a>}
+            </div>
+          </div>
+        </article>
+      )
+    })}
+  </div>
+
+  <!-- Filterable full index -->
+  <div class="mt-20">
+    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-ink pb-4">
+      <h2 class="text-xl font-semibold tracking-tight text-ink">
+        {lang === 'en' ? 'Complete System Ledger' : 'السجل الكامل للأنظمة'}
+      </h2>
+      <div class="flex flex-wrap gap-2" role="group" aria-label={lang === 'en' ? 'Filter work' : 'تصفية الأعمال'}>
+        {filters.map((f, idx) => (
+          <button
+            type="button"
+            data-work-filter={f.key}
+            aria-pressed={idx === 0 ? 'true' : 'false'}
+            class="work-filter-btn px-3 py-1.5 font-mono text-xs transition-colors"
+          >
+            {f.label[lang]}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div class="mt-4 overflow-x-auto">
+      <table class="w-full border-collapse text-start text-sm">
+        <thead>
+          <tr class="border-b border-rule font-mono text-[11px] uppercase tracking-wider text-ink-muted">
+            <th class="py-3 pe-4 text-start font-medium">{lang === 'en' ? 'Year' : 'السنة'}</th>
+            <th class="py-3 pe-4 text-start font-medium">{lang === 'en' ? 'Project' : 'المشروع'}</th>
+            <th class="hidden py-3 pe-4 text-start font-medium md:table-cell">{lang === 'en' ? 'Stack' : 'التقنيات'}</th>
+            <th class="py-3 pe-4 text-start font-medium">{lang === 'en' ? 'Outcome' : 'المخرج'}</th>
+            <th class="py-3 text-end font-medium">{lang === 'en' ? 'Links' : 'الروابط'}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-rule" id="work-index-tbody">
+          {WORK_INDEX.map((row) => (
+            <tr data-category={row.category} class="transition-colors hover:bg-paper-alt/70">
+              <td class="tabular-nums py-4 pe-4 font-mono text-xs text-ink-muted whitespace-nowrap align-top">
+                {row.year}
+              </td>
+              <td class="py-4 pe-4 align-top">
+                <p class="font-medium text-ink">{row.name[lang]}</p>
+                <p class="mt-0.5 font-mono text-[11px] text-ink-muted">{row.domain[lang]} · {row.role[lang]}</p>
+              </td>
+              <td class="hidden py-4 pe-4 align-top md:table-cell">
+                <div class="flex flex-wrap gap-1">
+                  {row.stack.map((s) => (
+                    <span class="chip">{s}</span>
+                  ))}
+                </div>
+              </td>
+              <td class="py-4 pe-4 text-ink-soft align-top max-w-md">
+                {row.outcome[lang]}
+              </td>
+              <td class="py-4 text-end font-mono text-xs whitespace-nowrap align-top">
+                <div class="inline-flex flex-col items-end gap-1.5 sm:flex-row sm:items-center sm:gap-3">
+                  {row.caseStudySlug && (
+                    <a
+                      href={withBase(
+                        lang === 'ar' && (row.caseStudySlug === 'hawyati' || row.caseStudySlug === 'magic-linker')
+                          ? `/ar/work/${row.caseStudySlug}/`
+                          : `/work/${row.caseStudySlug}/`,
+                      )}
+                      class="text-accent underline hover:text-accent-dark"
+                    >
+                      {lang === 'en' ? 'Case Study' : 'الدراسة'}
+                    </a>
+                  )}
+                  {row.liveUrl && (
+                    <a href={row.liveUrl} target="_blank" rel="noopener noreferrer" class="underline hover:text-accent">
+                      Live ↗
+                    </a>
+                  )}
+                  {row.playStoreUrl && (
+                    <a href={row.playStoreUrl} target="_blank" rel="noopener noreferrer" class="underline hover:text-accent">
+                      Google Play ↗
+                    </a>
+                  )}
+                  {!row.liveUrl && !row.playStoreUrl && !row.caseStudySlug && (
+                    <span class="text-ink-muted">NDA</span>
+                  )}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const buttons = document.querySelectorAll('.work-filter-btn')
+    const rows = document.querySelectorAll('#work-index-tbody tr')
+    if (!buttons.length || !rows.length) return
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.getAttribute('data-work-filter')
+        buttons.forEach((b) => {
+          b.setAttribute('aria-pressed', String(b === btn))
+        })
+        rows.forEach((tr) => {
+          const cat = tr.getAttribute('data-category')
+          tr.classList.toggle('hidden', key !== 'all' && cat !== key)
+        })
+      })
+    })
+  })()
+</script>

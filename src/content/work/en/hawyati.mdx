@@ -1,0 +1,108 @@
+---
+title: "Hawyati: Dry-Port Management & Live 3D Container Yard Twin"
+routeSlug: "hawyati"
+order: 1
+year: "2025"
+status: "shipped"
+role: "Sole Architect & Full-Stack Engineer"
+domain: "Logistics · 3D Twin"
+category: "commerce"
+summary: "End-to-end dry-port yard management system and 60fps WebGL digital twin built for Al-Amjad Multi-Logistics near Jeddah Islamic Port (120,000 m², 12,000+ TEU capacity)."
+stack: ["Laravel", "React", "Three.js", "WebSockets", "MySQL", "Redis"]
+nda: false
+lang: "en"
+headlineMetric:
+  value: "12,000+ TEU"
+  label: "Active yard capacity across 120,000 m² near Jeddah Islamic Port"
+liveUrl: "https://hawyati.ahmednomer.com/"
+coverImage:
+  src: "/images/projects/hawyati-web.webp"
+  alt: "Hawyati dry-port container yard platform showing the 3D digital twin and live telemetry feed"
+  width: 1006
+  height: 630
+  urlLabel: "hawyati.ahmednomer.com"
+diagramVariant: "hawyati"
+team:
+  - name: "Ibrahim Khaled"
+    role: "Sole Architect, Backend, Frontend & 3D Twin"
+---
+
+import ArchDiagram from '../../../components/diagrams/ArchDiagram.astro'
+
+## 01 · Context
+
+Dry-port yards outside Jeddah Islamic Port handle continuous container traffic: dry 20ft/40ft units, temperature-controlled reefers requiring constant monitoring, empty returns, and damaged units awaiting repair. Spreadsheets and flat table views make it difficult for yard supervisors and enterprise clients to visualize stack density, crane bottlenecks, or reefer anomalies in real time.
+
+I owned the entire platform — system architecture, backend operations ledger, bilingual Arabic/English portal, and the live **HAWYATI-YARD-TWIN** 3D visualization — from initial schema to production deployment.
+
+## 02 · Constraints
+
+- **High spatial density in the browser:** Representing thousands of stacked containers (Bay × Row × Tier) smoothly at 60fps on standard office laptops without forcing operators to install desktop software.
+- **Zero slot collisions:** Two crane/gate operators must never assign two different ISO containers to the same physical `(yard_id, bay, row, tier)` coordinate at the same time.
+- **Bilingual operational clarity:** Arabic-first interface for Jeddah yard staff with seamless English switching for international shipping lines and freight forwarders.
+
+## 03 · System Architecture
+
+<ArchDiagram
+  variant="hawyati"
+  caption="Data flows from gate inspection and crane ops into a transactional Laravel ledger, broadcasting compact state deltas to the Three.js yard twin."
+/>
+
+## 04 · Key Engineering Decisions & Trade-offs
+
+| Decision | Alternatives Considered | Why This Won |
+|---|---|---|
+| **GPU Instanced Rendering (`InstancedMesh`) in Three.js** | Individual Three.js meshes per container, or 2D SVG yard map | Drawing thousands of containers as separate meshes collapses frame rates due to draw-call overhead. Instancing renders the entire stack in a handful of draw calls while maintaining 60fps and crisp color-coded status (dry, reefer, inspection). |
+| **Composite Coordinate Index + Pessimistic Row Locking** | Application-level availability check before insert | Checking availability in PHP and inserting in a second query creates a race condition during busy gate shifts. Enforcing a unique active slot constraint plus `lockForUpdate()` inside `DB::transaction()` guarantees physical consistency. |
+| **Delta Event Stream via Redis** | Full yard polling every N seconds | Polling full 12,000-slot snapshots wastes bandwidth and creates visible jitter. Publishing compact container-move deltas keeps the live operations ticker (`[INSPECTION OK]`, `[COOLED] -18.2°C`, `[STACKED]`) instant and lightweight. |
+
+## 05 · Atomic Slot Allocation (Excerpt)
+
+A simplified version of the transactional slot-assignment guard used to prevent double-stacking and enforce tier physics (you cannot place a container on Tier 3 if Tier 2 below it is empty):
+
+```php
+declare(strict_types=1);
+
+final class AllocateYardSlotAction
+{
+    public function execute(string $containerIso, int $bay, int $row, int $tier): YardSlot
+    {
+        return DB::transaction(function () use ($containerIso, $bay, $row, $tier): YardSlot {
+            // Lock the vertical stack column (all tiers for this bay/row) to serialize crane moves
+            $column = YardSlot::query()
+                ->where('bay', $bay)
+                ->where('row', $row)
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('tier');
+
+            if ($tier > 1 && !$column->has($tier - 1)) {
+                throw new DomainException("Cannot stack at tier {$tier}: supporting tier is empty.");
+            }
+
+            if ($column->has($tier) && $column[$tier]->occupied_by !== null) {
+                throw new DomainException("Slot B{$bay}-R{$row}-T{$tier} is already occupied.");
+            }
+
+            $slot = YardSlot::updateOrCreate(
+                ['bay' => $bay, 'row' => $row, 'tier' => $tier],
+                ['occupied_by' => $containerIso, 'status' => 'stacked', 'stacked_at' => now()]
+            );
+
+            YardTelemetryEvent::dispatch($slot);
+
+            return $slot;
+        });
+    }
+}
+```
+
+## 06 · Outcome
+
+- **Live in production** at [hawyati.ahmednomer.com](https://hawyati.ahmednomer.com/) for Al-Amjad Multi-Logistics Services (18 km from Jeddah Islamic Port).
+- Models a **120,000+ m²** logistics yard with **12,000+ TEU** active capacity, real-time RTG crane activity, and live reefer temperature/inspection telemetry.
+- Delivered end to end by a single engineer across backend, frontend, 3D WebGL, and Arabic/English localization.
+
+## 07 · What I'd Do Differently Next Time
+
+> On the initial landing release, the live operations ticker bar renders inside an overflow container that can display a horizontal scrollbar on narrower Windows viewports, and the 3D scene loads eagerly above the fold. In a next iteration, I would replace the scrollable ticker with a CSS-only masked marquee strip (zero scrollbar chrome) and lazy-hydrate heavy WebGL shaders behind a crisp static canvas snapshot for low-end mobile devices.

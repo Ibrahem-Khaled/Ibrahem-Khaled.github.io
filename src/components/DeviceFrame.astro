@@ -1,0 +1,52 @@
+---
+import { withBase } from '../utils/paths'
+
+interface Props {
+  src: string
+  alt: string
+  width: number
+  height: number
+  urlLabel?: string
+  figureLabel?: string
+  loading?: 'eager' | 'lazy'
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  urlLabel,
+  figureLabel,
+  loading = 'lazy',
+} = Astro.props
+---
+
+<figure class="border border-rule bg-paper-alt">
+  {urlLabel && (
+    <div class="flex items-center justify-between border-b border-rule px-3.5 py-2 font-mono text-[11px] text-ink-muted" dir="ltr">
+      <div class="flex items-center gap-1.5" aria-hidden="true">
+        <span class="h-2 w-2 rounded-full border border-ink/30"></span>
+        <span class="h-2 w-2 rounded-full border border-ink/30"></span>
+        <span class="h-2 w-2 rounded-full border border-ink/30"></span>
+      </div>
+      <span class="truncate">{urlLabel}</span>
+    </div>
+  )}
+  <div class="overflow-hidden bg-paper">
+    <img
+      src={withBase(src)}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={loading}
+      decoding="async"
+      class="block h-auto w-full object-cover"
+    />
+  </div>
+  {figureLabel && (
+    <figcaption class="border-t border-rule px-3.5 py-2 font-mono text-[11px] text-ink-muted" dir="ltr">
+      {figureLabel}
+    </figcaption>
+  )}
+</figure>

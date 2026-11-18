@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro'
+import TicTacToeIsland from '../../islands/TicTacToeIsland'
+import { PROFILE } from '../../data/profile'
+import { withBase } from '../../utils/paths'
+---
+
+<Base
+  lang="en"
+  title={`Tic-Tac-Toe — Lab · ${PROFILE.name.en}`}
+  description="Isolated React island mini-game inside the Astro engineering lab."
+>
+  <section class="container-swiss pt-12 pb-16 md:pt-16">
+    <div class="mb-8 border-b border-rule pb-4">
+      <a href={withBase('/lab/')} class="font-mono text-xs text-ink-muted hover:text-accent">
+        ← Back to Lab
+      </a>
+    </div>
+    <div class="mx-auto max-w-md text-center">
+      <h1 class="text-3xl font-semibold tracking-tight text-ink">Tic-Tac-Toe</h1>
+      <p class="mt-2 mb-8 text-sm text-ink-muted">Play as X against a heuristic AI opponent.</p>
+      <TicTacToeIsland client:load />
+    </div>
+  </section>
+</Base>
