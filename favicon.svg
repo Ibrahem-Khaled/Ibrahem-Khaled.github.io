@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#121211" />
+  <rect x="4" y="4" width="56" height="56" fill="none" stroke="#F6F4EF" stroke-opacity="0.2" stroke-width="1.5" />
+  <text x="32" y="41" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="26" font-weight="600" fill="#F6F4EF" letter-spacing="-1">IK</text>
+  <rect x="46" y="46" width="8" height="8" fill="#C8430A" />
+</svg>
